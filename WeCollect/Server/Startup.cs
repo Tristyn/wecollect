@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WeCollect.App.Web3;
 
 namespace WeCollect
 {
@@ -33,6 +34,12 @@ namespace WeCollect
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
+            var web3Db = new Web3Db(
+                new Nethereum.Web3.Web3(Configuration["web3Url"]),
+                Configuration["web3ServerAddress"],
+                Configuration["web3ServerPrivateKey"]);
+            services.AddSingleton(web3Db);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
