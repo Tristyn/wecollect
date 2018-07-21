@@ -1,18 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Azure.Documents;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WeCollect.App.Models
 {
-    public class CardDto
+    public class CardDto : Document
     {
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "id")]
-        public int Id { get; set; }
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; } = nameof(CardDto);
 
         [JsonProperty(PropertyName = "ownerAddr")]
         public string OwnerAddr { get; set; }
@@ -46,8 +44,8 @@ namespace WeCollect.App.Models
         {
             return new CardSpecDto
             {
-                Name = Name,
-                Id = Id
+                Id = Id,
+                Name = Name
             };
         }
     }

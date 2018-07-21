@@ -1,6 +1,6 @@
 using System;
 
-namespace WeCollect.Models
+namespace WeCollect.Server.Models
 {
     public class ErrorViewModel
     {

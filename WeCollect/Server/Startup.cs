@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
+using WeCollect.App;
+using WeCollect.App.Documents;
 using WeCollect.App.Web3;
 
 namespace WeCollect
@@ -20,7 +20,9 @@ namespace WeCollect
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public static IConfiguration Configuration { get; private set; }
+
+        public static Container Container { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,12 +36,39 @@ namespace WeCollect
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
-            var web3Db = new Web3Db(
+
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                // {2} is area, {1} is controller,{0} is the action    
+                o.ViewLocationFormats.Add("/Server/Views/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Server/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Server/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+            });
+
+            Container = new Container();
+
+            ContractArtifacts contracts = new ContractArtifacts();
+
+            Web3Db web3Db = Container.Web3 = new Web3Db(
                 new Nethereum.Web3.Web3(Configuration["web3Url"]),
+                contracts,
                 Configuration["web3ServerAddress"],
                 Configuration["web3ServerPrivateKey"]);
-            services.AddSingleton(web3Db);
+            
+            DocumentDb documents = Container.Documents = new DocumentDb(
+                new Microsoft.Azure.Documents.Client.DocumentClient(
+                    Configuration.GetValue<Uri>("documentDbEndpoint"),
+                    Configuration["documentDbKey"],
+                    null,
+                    Microsoft.Azure.Documents.ConsistencyLevel.Session));
+
+            //var publisher = new ContractPublisher(web3Db);
+
+            var contractSpecs = Container.ContractArtifacts = new ContractArtifacts();
+
+            var contractsInitializer = Container.ContractsInitializer = new ContractsInitializer(Container);
+
+            services.AddSingleton(Container);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +94,11 @@ namespace WeCollect
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        public static async Task Initialize()
+        {
+            await Container.ContractsInitializer.Initialize();
         }
     }
 }
