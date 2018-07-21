@@ -39,5 +39,11 @@ namespace WeCollect.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [Route("card/{id}")]
+        public IActionResult Card([FromRoute]int id)
+        {
+            return View();
+        }
     }
 }
