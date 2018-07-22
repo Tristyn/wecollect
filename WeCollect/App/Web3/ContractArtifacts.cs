@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using WeCollect.App.Models;
 
 namespace WeCollect.App.Web3
 {
@@ -29,6 +30,7 @@ namespace WeCollect.App.Web3
         {
             _path = path;
             Name = name;
+            Id = nameof(ContractDto) + name;
             Abi = File.ReadAllText(Path.ChangeExtension(_path, ".abi"));
             Bin = File.ReadAllText(Path.ChangeExtension(_path, ".bin"));
         }
@@ -38,5 +40,7 @@ namespace WeCollect.App.Web3
         public string Bin { get; }
 
         public string Name { get; }
+
+        public string Id { get; }
     }
 }

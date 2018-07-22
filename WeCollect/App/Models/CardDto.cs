@@ -6,11 +6,9 @@ namespace WeCollect.App.Models
 {
     public class CardDto : Document
     {
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; } = nameof(CardDto);
+        protected override string Type => nameof(CardDto);
 
         [JsonProperty(PropertyName = "ownerAddr")]
         public string OwnerAddr { get; set; }
@@ -45,7 +43,7 @@ namespace WeCollect.App.Models
             return new CardSpecDto
             {
                 Id = Id,
-                Name = Name
+                Name = Id
             };
         }
     }

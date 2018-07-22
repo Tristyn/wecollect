@@ -29,10 +29,9 @@ namespace WeCollect.App
 
         public async Task Redeploy()
         {
-
             foreach (ContractArtifact contractArtifact in _container.ContractArtifacts.All)
             {
-                var contract = await _container.Documents.GetContractWithName(contractArtifact.Name);
+                var contract = await _container.Documents.Contracts.Get(contractArtifact.Id);
                 ContractPublisher publisher = new ContractPublisher(contractArtifact, _container);
 
                 Nethereum.Contracts.Contract deployed = await publisher.Deploy();

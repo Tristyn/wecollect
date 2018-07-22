@@ -1,26 +1,17 @@
-﻿using Microsoft.Azure.Documents;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace WeCollect.App.Models
 {
     public class ContractDto : Document
     {
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; } = nameof(ContractDto);
+        protected override string Type => nameof(ContractDto);
 
         [JsonProperty(PropertyName = "address")]
         public string Address { get; set; }
 
         [JsonProperty(PropertyName = "abi")]
         public string Abi { get; set; }
-
-        
     }
 }

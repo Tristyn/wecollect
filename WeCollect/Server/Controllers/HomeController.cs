@@ -14,8 +14,8 @@ namespace WeCollect.Controllers
         {
             return View();
         }
-
-        public IActionResult About()
+        
+        public IActionResult Set()
         {
             ViewData["Message"] = "Your application description page.";
 
