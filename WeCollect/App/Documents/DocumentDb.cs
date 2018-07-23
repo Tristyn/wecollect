@@ -2,10 +2,11 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using System;
+using System.Buffers;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using WeCollect.App.Extensions;
 using WeCollect.App.Models;
 
 namespace WeCollect.App.Documents
@@ -21,13 +22,17 @@ namespace WeCollect.App.Documents
 
         public Collection<ContractDto> Contracts { get; }
 
+        public Collection<CardDto> Cards { get; set; }
+
         private volatile bool _dbExists;
 
         public DocumentDb(DocumentClient client)
         {
             _client = client;
-
+            
             Contracts = new Collection<ContractDto>(client, this);
+
+            Cards = new Collection<CardDto>(_client, this);
         }
 
         public async ValueTask EnsureDbExists()
@@ -49,60 +54,11 @@ namespace WeCollect.App.Documents
                 .SingleOrLog(c => c.Id == id);
         }
 
-        public class Collection<T> where T : Microsoft.Azure.Documents.Document
+        public Task<IEnumerable<CardDto>> GetCardSet(string name)
         {
-            private readonly DocumentClient _client;
-            private readonly DocumentDb documentDb;
-
-            public Collection(DocumentClient client, DocumentDb documentDb)
-            {
-                _client = client;
-                this.documentDb = documentDb;
-            }
-
-            public async Task<T> Get(string id, bool ensureStatusCode = true)
-            {
-                await documentDb.EnsureDbExists();
-                DocumentResponse<T> resp = await _client.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
-                return resp.Document;
-            }
-
-            public async Task Set(T document, bool ensureStatusCode = true)
-            {
-                await documentDb.EnsureDbExists();
-                ResourceResponse<Microsoft.Azure.Documents.Document> resp = await _client.ReplaceDocumentAsync(document, AccessConditionMatch(document));
-            }
-
-            public async Task Create(T document, bool ensureStatusCode = true)
-            {
-                await documentDb.EnsureDbExists();
-                ResourceResponse<Microsoft.Azure.Documents.Document> resp = await _client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), document, AccessConditionMatch(document));
-            }
-
-            public async Task<bool> Exists(string id, bool ensureStatusCode = true)
-            {
-                await documentDb.EnsureDbExists();
-                
-                return await _client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
-                        .Exists();
-            }
-
-            public async Task<HttpStatusCode> Upsert(T document, bool ensureStatusCode = true)
-            {
-                await documentDb.EnsureDbExists();
-                ResourceResponse<Microsoft.Azure.Documents.Document> resp = await _client.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), document, AccessConditionMatch(document));
-                if (ensureStatusCode && resp.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    throw new System.Exception();
-                }
-
-                return resp.StatusCode;
-            }
-
-            private RequestOptions AccessConditionMatch(Resource objectWithEtag)
-            {
-                return new RequestOptions { AccessCondition = new AccessCondition { Condition = objectWithEtag.ETag, Type = AccessConditionType.IfMatch } };
-            }
+            return _client.CreateDocumentQuery<CardDto>(CollectionLink)
+                .Where(card => card.Set == name)
+                .ToListAsync();
         }
     }
 }

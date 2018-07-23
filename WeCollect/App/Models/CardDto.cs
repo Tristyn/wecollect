@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Documents;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 
 namespace WeCollect.App.Models
@@ -8,7 +7,8 @@ namespace WeCollect.App.Models
     {
         public override string Name { get; set; }
 
-        protected override string Type => nameof(CardDto);
+        [JsonProperty(PropertyName = "set")]
+        public string Set { get; set; }
 
         [JsonProperty(PropertyName = "ownerAddr")]
         public string OwnerAddr { get; set; }
@@ -21,7 +21,7 @@ namespace WeCollect.App.Models
         public string FirstOwnerAddr { get; set; }
 
         [JsonProperty(PropertyName = "firstOwnerName")]
-        public string FirstownerName { get; set; }
+        public string FirstOwnerName { get; set; }
 
         [JsonProperty(PropertyName = "currentPrice")]
         public int CurrentPrice { get; set; }
@@ -45,6 +45,11 @@ namespace WeCollect.App.Models
                 Id = Id,
                 Name = Id
             };
+        }
+
+        public static string GetId(string name)
+        {
+            return nameof(CardDto) + name;
         }
     }
 }

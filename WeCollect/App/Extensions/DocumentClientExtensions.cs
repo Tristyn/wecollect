@@ -1,12 +1,12 @@
 ﻿using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using WeCollect.App;
 
-namespace WeCollect.App.Extensions
+namespace System.Linq
 {
     public static class DocumentClientExtensions
     {
@@ -128,6 +128,25 @@ namespace WeCollect.App.Extensions
             }
 
             return first != default;
+        }
+
+        public static async Task<IEnumerable<T>> ToListAsync<T>(this IQueryable<T> query)
+        {
+            IDocumentQuery<T> result = query.AsDocumentQuery();
+            IEnumerable<T> ret = null;
+            while (result.HasMoreResults)
+            {
+                FeedResponse<T> batch = await result.ExecuteNextAsync<T>();
+                if (ret == null)
+                {
+                    ret = batch;
+                }
+                else
+                {
+                    ret = ret.Concat(batch);
+                }
+            }
+            return ret;
         }
     }
 }

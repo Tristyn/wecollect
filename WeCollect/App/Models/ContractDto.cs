@@ -6,12 +6,15 @@ namespace WeCollect.App.Models
     {
         public override string Name { get; set; }
 
-        protected override string Type => nameof(ContractDto);
-
         [JsonProperty(PropertyName = "address")]
         public string Address { get; set; }
 
         [JsonProperty(PropertyName = "abi")]
         public string Abi { get; set; }
+        
+        public static string GetId(string name)
+        {
+            return nameof(ContractDto) + name;
+        }
     }
 }

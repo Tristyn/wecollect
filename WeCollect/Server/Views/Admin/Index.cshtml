@@ -8,3 +8,10 @@
 <form asp-controller="Admin" asp-action="Redeploy" method="post" class="form-horizontal">
     <button>Redeploy</button>
 </form>
+
+@model CardDto
+<form asp-controller="Admin" asp-action="CreateCard" method="post" class="form-horizontal">
+    @Html.LabelFor(_ => _.Name) <input asp-for="Name" />
+    @Html.LabelFor(_ => _.Set) <input asp-for="Set" />
+    <button>Create Card</button>
+</form>

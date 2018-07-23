@@ -1,25 +1,42 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using WeCollect.App;
+using WeCollect.App.Models;
 using WeCollect.Server.Models;
 
 namespace WeCollect.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly Container _container;
+
+        public HomeController(Container container)
         {
-            return View();
+            _container = container;
         }
-        
-        public IActionResult Set()
+
+        public Task<IActionResult> Index()
         {
-            ViewData["Message"] = "Your application description page.";
+            return Set("universe");
+        }
+
+        [Route("set/{name}")]
+        public async Task<IActionResult> Set([FromRoute]string name)
+        {
+            IEnumerable<CardDto> cards = await _container.Documents.GetCardSet(name);
+
+
 
             return View();
+        }
+
+        [Route("card/{name}")]
+        public async Task<IActionResult> Card([FromRoute]string name)
+        {
+            CardDto card = await _container.Documents.Cards.Get(CardDto.GetId(name));
+            return View(card);
         }
 
         public IActionResult Contact()

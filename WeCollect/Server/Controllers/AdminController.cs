@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App;
+using WeCollect.App.Models;
 
 namespace WeCollect.Server.Controllers
 {
@@ -27,6 +25,14 @@ namespace WeCollect.Server.Controllers
             await Container.ContractsInitializer.Redeploy();
 
             return View(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCard([FromForm] CardDto card)
+        {
+            await Container.Documents.Cards.Create(card);
+
+            return Redirect(Url.Action("Card", "Home", new { name = card.Name }));
         }
     }
 }
