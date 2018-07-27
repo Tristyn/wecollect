@@ -17,7 +17,7 @@ namespace WeCollect
         {
             var host = CreateWebHostBuilder(args).Build();
 
-            await Startup.Initialize();
+            await Startup.Initialize(); 
 
             host.Run();
         }

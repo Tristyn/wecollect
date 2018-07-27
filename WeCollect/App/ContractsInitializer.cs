@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Nethereum.Contracts;
+using System.Threading.Tasks;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;
 
@@ -21,7 +22,7 @@ namespace WeCollect.App
                 {
                     ContractPublisher publisher = new ContractPublisher(contract, _container);
 
-                    Nethereum.Contracts.Contract deployed = await publisher.Deploy();
+                    Contract deployed = await publisher.Deploy();
                     await publisher.CreateContractDocument(deployed);
                 }
             }
@@ -34,7 +35,7 @@ namespace WeCollect.App
                 var contract = await _container.Documents.Contracts.Get(contractArtifact.Id);
                 ContractPublisher publisher = new ContractPublisher(contractArtifact, _container);
 
-                Nethereum.Contracts.Contract deployed = await publisher.Deploy();
+                Contract deployed = await publisher.Deploy();
                 await publisher.UpdateContractDocument(deployed, contract);
 
             }
