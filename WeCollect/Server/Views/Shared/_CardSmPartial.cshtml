@@ -1,23 +1,37 @@
 ﻿@model CardDto
+@using WeCollect.Server.Controllers
+
+@{
+    for (int i = Model.Parents.Length; i > 0; i--)
+    {
+        var parent = Model.Parents[i];
+
+        <a> href="@Url.RouteUrl(HomeController.CardRoute)"></a> if (i != 0)
+        {
+            @:&nbsp;>&nbsp;
+        }
+    }
+}
 
 <div class="row">
     <div class="col-md-3">
 
-        @Html.LabelFor(model => model.Name)
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
 
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        
-        @Html.LabelFor(model => model.CurrentPrice)
-        @Html.LabelFor(model => model.NextPrice)
-
+        Current price: @Html.ValueFor(model => model.PriceEth)
+        Next Price: @Html.ValueFor(model => model.NextPriceEth)
+        Owner:
+        @if (Uri.IsWellFormedUriString(Model.Name, UriKind.Absolute))
+        {
+            <a href="@Model.Name">@Model.Name</a>
+        }
+        else
+        {
+            @Model.Name
+        }
     </div>
 </div>

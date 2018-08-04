@@ -25,7 +25,6 @@ namespace WeCollect.App.Data
             _multiply = contract.GetFunction("multiply");
 
             _onMultiplied = contract.GetEvent("onMultiplied");
-            
         }
 
         public void Multiply(int value)

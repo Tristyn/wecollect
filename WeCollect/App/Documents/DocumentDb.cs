@@ -25,7 +25,7 @@ namespace WeCollect.App.Documents
         public Collection<CardDto> Cards { get; set; }
 
         private volatile bool _dbExists;
-
+        
         public DocumentDb(DocumentClient client)
         {
             _client = client;

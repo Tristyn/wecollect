@@ -5,6 +5,11 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.2" />
@@ -15,21 +20,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="App\Contracts\bin\" />
     <Folder Include="App\Data\" />
     <Folder Include="Server\Hubs\" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="App\Contracts\bin\Test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="Server\Views\Admin\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="App\Contracts\bin\test.abi">
+    <None Update="App\Contracts\bin\Test.abi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="App\Contracts\bin\test.bin">
+    <None Update="App\Contracts\bin\Test.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="App\Contracts\test.sol">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

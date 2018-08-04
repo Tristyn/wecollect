@@ -6,7 +6,7 @@ using WeCollect.App;
 using WeCollect.App.Models;
 using WeCollect.Server.Models;
 
-namespace WeCollect.Controllers
+namespace WeCollect.Server.Controllers
 {
     public class HomeController : Controller
     {
@@ -17,6 +17,10 @@ namespace WeCollect.Controllers
             _container = container;
         }
 
+        public const string CardRoute = "Card";
+        public const string UniverseRoute = "Universe";
+
+        [Route("Index", Name = UniverseRoute)]
         public Task<IActionResult> Index()
         {
             return Set("universe");
@@ -32,7 +36,7 @@ namespace WeCollect.Controllers
             return View();
         }
 
-        [Route("card/{name}")]
+        [Route("card/{name}", Name = CardRoute)]
         public async Task<IActionResult> Card([FromRoute]string name)
         {
             CardDto card = await _container.Documents.Cards.Get(CardDto.GetId(name));

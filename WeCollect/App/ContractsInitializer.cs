@@ -1,5 +1,7 @@
 ﻿using Nethereum.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
+using WeCollect.App.Documents;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;
 
@@ -8,24 +10,28 @@ namespace WeCollect.App
     public class ContractsInitializer
     {
         private readonly Container _container;
+        private readonly Collection<ContractDto> _contractDocuments;
 
         public ContractsInitializer(Container container)
         {
             _container = container;
+
+            _contractDocuments = _container.Documents.Contracts;
         }
 
         public async Task Initialize()
         {
-            foreach (ContractArtifact contract in _container.ContractArtifacts.All)
-            {
-                if(!await _container.Documents.Contracts.Exists(contract.Name, ensureStatusCode: false))
+            await Task.WhenAll(_container.ContractArtifacts.All
+                .Select(async contract =>
                 {
-                    ContractPublisher publisher = new ContractPublisher(contract, _container);
+                    if(!await _contractDocuments.Exists(contract.Name))
+                    {
+                        ContractPublisher publisher = new ContractPublisher(contract, _container);
 
-                    Contract deployed = await publisher.Deploy();
-                    await publisher.CreateContractDocument(deployed);
-                }
-            }
+                        Contract deployed = await publisher.Deploy();
+                        await publisher.CreateContractDocument(deployed);
+                    }
+                }));
         }
 
         public async Task Redeploy()

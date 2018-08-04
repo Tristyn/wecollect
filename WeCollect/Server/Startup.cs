@@ -9,6 +9,7 @@ using System;
 using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Documents;
+using WeCollect.App.Extensions;
 using WeCollect.App.Web3;
 
 namespace WeCollect
@@ -47,7 +48,7 @@ namespace WeCollect
 
             Container = new Container();
 
-            ContractArtifacts contracts = new ContractArtifacts();
+            var contracts = Container.ContractArtifacts = ContractArtifacts.Initialize().Result;
 
             Web3Db web3Db = Container.Web3 = new Web3Db(
                 new Nethereum.Web3.Web3(Configuration["web3Url"]),
@@ -61,11 +62,7 @@ namespace WeCollect
                     Configuration["documentDbKey"],
                     null,
                     Microsoft.Azure.Documents.ConsistencyLevel.Session));
-
-            //var publisher = new ContractPublisher(web3Db);
-
-            var contractSpecs = Container.ContractArtifacts = new ContractArtifacts();
-
+            
             var contractsInitializer = Container.ContractsInitializer = new ContractsInitializer(Container);
 
             services.AddSingleton(Container);
