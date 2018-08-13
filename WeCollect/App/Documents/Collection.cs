@@ -15,14 +15,15 @@ namespace WeCollect.App.Documents
         private static readonly Uri CollectionLink = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
 
         private readonly DocumentClient _client;
-        private readonly DocumentDb documentDb;
+        private readonly CardDocumentDb documentDb;
 
-        public Collection(DocumentClient client, DocumentDb documentDb)
+        public Collection(DocumentClient client, CardDocumentDb documentDb)
         {
             _client = client;
             this.documentDb = documentDb;
         }
 
+        /// <exception cref="DocumentClientException"/>
         public async Task<T> Get(string id, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
@@ -30,6 +31,7 @@ namespace WeCollect.App.Documents
             return resp.Document;
         }
 
+        /// <exception cref="DocumentClientException"/>
         public async Task Set(T document, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
@@ -37,28 +39,30 @@ namespace WeCollect.App.Documents
             var resp = await _client.ReplaceDocumentAsync(CollectionLink,document, AccessConditionMatch(document));
         }
 
+        /// <exception cref="DocumentClientException"/>
         public async Task Create(T document, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
             ResourceResponse<Microsoft.Azure.Documents.Document> resp = await _client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), document, AccessConditionMatch(document));
         }
 
+        /// <exception cref="DocumentClientException"/>
         public async Task<bool> Exists(string id, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
 
-            return await _client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
-                    .Exists();
+            var docs = await _client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
+                    .Where(contract => contract.Id == id)
+                    .ToListAsync();
+
+            return docs.Any();
         }
 
+        /// <exception cref="DocumentClientException"/>
         public async Task<HttpStatusCode> Upsert(T document, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
             ResourceResponse<Microsoft.Azure.Documents.Document> resp = await _client.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), document, AccessConditionMatch(document));
-            if (ensureStatusCode && resp.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new System.Exception();
-            }
 
             return resp.StatusCode;
         }

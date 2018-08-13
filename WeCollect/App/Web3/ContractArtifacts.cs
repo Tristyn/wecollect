@@ -15,21 +15,22 @@ namespace WeCollect.App.Web3
     {
         public ContractArtifact Test { get; }
 
+        public ContractArtifact Cards { get; }
+
         public ContractArtifact[] All { get; }
+        
+        public Dictionary<string, ContractDto> DocumentsByName { get; set; }
 
         public Dictionary<string, ContractArtifact> ByName { get; }
+        
 
         private ContractArtifacts(Dictionary<string, ContractArtifact> contracts)
         {
             ByName = contracts;
             All = contracts.Values.ToArray();
-
-            foreach (var method in typeof(ContractArtifacts).GetProperties(BindingFlags.Instance | BindingFlags.GetProperty)
-                .Where(property => property.SetMethod.ReturnType.IsAssignableFrom(typeof(ContractArtifact))))
-            {
-                method.SetValue(this, contracts[method.Name]);
-            }
+            
             Test = contracts[nameof(Test)];
+            Cards = contracts[nameof(Cards)];
         }
 
         public static async Task<ContractArtifacts> Initialize()
@@ -37,8 +38,10 @@ namespace WeCollect.App.Web3
             string dir = Path.Combine(
                 new Uri(Assembly.GetEntryAssembly().CodeBase).GetDirectory(),
                 "App", "Contracts", "bin");
-            
+
             var contractSourcePaths = Directory.GetFiles(dir, "*.bin", SearchOption.AllDirectories);
+
+            
 
             var artifacts = await Task.WhenAll(contractSourcePaths.Select(contractSourcePath => Task.Run(() => new ContractArtifact(contractSourcePath))));
             var contracts = artifacts.ToDictionary(contract => contract.Name);
@@ -55,7 +58,7 @@ namespace WeCollect.App.Web3
         ILogger _log = Logger.GetLogger<ContractArtifact>();
 
         public ContractArtifact(string sourcePath)
-            : this(sourcePath, sourcePath.Remove(sourcePath.LastIndexOf('.')).Remove(0, sourcePath.LastIndexOf(Path.DirectorySeparatorChar) + 1))
+            : this(sourcePath, Path.GetFileNameWithoutExtension(sourcePath))
         {
 
         }
@@ -79,7 +82,7 @@ namespace WeCollect.App.Web3
                 _log.LogError(ex);
             }
         }
-        
+
         public string Abi { get; }
 
         public string Bin { get; }

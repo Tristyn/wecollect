@@ -1,8 +1,6 @@
-﻿using Nethereum.Hex.HexTypes;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
 namespace WeCollect.App.Models
@@ -32,8 +30,10 @@ namespace WeCollect.App.Models
         public DateTimeOffset LastMiningCollectedDate { get; set; }
 
         public int MiningLevel { get; set; } = 1;
-
-        [MaxLength(7)]
+        
+        /// <summary>
+        /// Max Length 7
+        /// </summary>
         public CardSpecDto[] Parents
         {
             get
@@ -70,12 +70,14 @@ namespace WeCollect.App.Models
 
         public override string Name { get; set; }
 
+        public override string Type => nameof(CardDto);
+
         public string Set { get; set; }
 
         public string OwnerName { get; set; }
 
         public string FirstOwnerName { get; set; }
-        
+
         public CardSpecDto ToCardSpec()
         {
             return new CardSpecDto

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace WeCollect.App.Models
 {
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public abstract class Document
     {
         [JsonProperty(PropertyName = "id")]
@@ -24,8 +23,7 @@ namespace WeCollect.App.Models
         [JsonProperty(PropertyName = "name")]
         public abstract string Name { get; set; }
 
-        [JsonIgnore()]
-        private string Type => GetType().Name;
+        public abstract string Type { get; }
         
         [JsonProperty(PropertyName = "ttl", NullValueHandling = NullValueHandling.Ignore)]
         public int? TimeToLive { get; set; }

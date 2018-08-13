@@ -17,31 +17,31 @@ namespace WeCollect.App.Web3
             _container = container;
         }
 
-        public async Task<Contract> Deploy()
+        public async Task<(Contract, TransactionReceipt)> Deploy()
         {
-            string txnHash = await _container.Web3.Web3.Eth.DeployContract.SendRequestAsync(
+            string txnHash = await _container.Web3.Eth.DeployContract.SendRequestAsync(
                 _contractArtifact.Abi,
                 _contractArtifact.Bin,
-                _container.Web3.ServerAddress,
+                _container.Web3Db.ServerAddress,
                 new HexBigInteger(4712388),
                 120);
 
             TransactionReceipt receipt;
             do
             {
-                receipt = await _container.Web3.Web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(txnHash);
+                receipt = await _container.Web3Db.Web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(txnHash);
                 if (receipt == null)
                 {
                     await Task.Delay(1000);
                 }
             } while (receipt == null);
 
-            Contract contract = _container.Web3.Web3.Eth.GetContract(_contractArtifact.Abi, receipt.ContractAddress);
+            Contract contract = _container.Web3Db.Web3.Eth.GetContract(_contractArtifact.Abi, receipt.ContractAddress);
 
-            return contract;
+            return (contract, receipt);
         }
 
-        public async Task CreateContractDocument(Contract contract)
+        public async Task CreateContractDocument(Contract contract, TransactionReceipt receipt)
         {
             var contractDocument = new ContractDto
             {
@@ -49,17 +49,21 @@ namespace WeCollect.App.Web3
                 Name = _contractArtifact.Name,
                 Abi = _contractArtifact.Abi,
                 Address = contract.Address,
+                
+                TransactionReceipt = receipt
             };
-
+            
             await _container.Documents.Contracts.Create(contractDocument);
         }
 
-        public async Task UpdateContractDocument(Contract etherContract, ContractDto contract)
+        public async Task UpdateContractDocument(Contract etherContract, ContractDto contract, TransactionReceipt receipt)
         {
             contract.Id = _contractArtifact.Id;
             contract.Name = _contractArtifact.Name;
             contract.Abi = _contractArtifact.Abi;
             contract.Address = etherContract.Address;
+
+            contract.TransactionReceipt = receipt;
 
             await _container.Documents.Contracts.Upsert(contract);
         }

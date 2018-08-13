@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Nethereum.RPC.Eth.DTOs;
+using Newtonsoft.Json;
 
 namespace WeCollect.App.Models
 {
@@ -11,7 +12,11 @@ namespace WeCollect.App.Models
 
         [JsonProperty(PropertyName = "abi")]
         public string Abi { get; set; }
-        
+
+        public override string Type => nameof(ContractDto);
+
+        public TransactionReceipt TransactionReceipt { get; set; }
+
         public static string GetId(string name)
         {
             return nameof(ContractDto) + name;

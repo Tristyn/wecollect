@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27906.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeCollect", "WeCollect\WeCollect.csproj", "{C56020C2-F4B8-403D-9FA5-89C0D763B771}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts.Contracts", "WeCollect\App\Contracts\Contracts.Contracts\Contracts.Contracts.csproj", "{DDE564CF-D8B0-43EC-A8D2-44C3A2976196}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C56020C2-F4B8-403D-9FA5-89C0D763B771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C56020C2-F4B8-403D-9FA5-89C0D763B771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C56020C2-F4B8-403D-9FA5-89C0D763B771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE564CF-D8B0-43EC-A8D2-44C3A2976196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE564CF-D8B0-43EC-A8D2-44C3A2976196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE564CF-D8B0-43EC-A8D2-44C3A2976196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE564CF-D8B0-43EC-A8D2-44C3A2976196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

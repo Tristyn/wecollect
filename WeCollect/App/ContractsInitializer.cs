@@ -1,4 +1,5 @@
 ﻿using Nethereum.Contracts;
+using Nethereum.RPC.Eth.DTOs;
 using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App.Documents;
@@ -21,17 +22,16 @@ namespace WeCollect.App
 
         public async Task Initialize()
         {
-            await Task.WhenAll(_container.ContractArtifacts.All
-                .Select(async contract =>
+            foreach (var contract in _container.ContractArtifacts.All)
+            {
+                if (!await _contractDocuments.Exists(ContractDto.GetId(contract.Name)))
                 {
-                    if(!await _contractDocuments.Exists(contract.Name))
-                    {
-                        ContractPublisher publisher = new ContractPublisher(contract, _container);
+                    ContractPublisher publisher = new ContractPublisher(contract, _container);
 
-                        Contract deployed = await publisher.Deploy();
-                        await publisher.CreateContractDocument(deployed);
-                    }
-                }));
+                    var (deployed, receipt) = await publisher.Deploy();
+                    await publisher.CreateContractDocument(deployed, receipt);
+                }
+            }
         }
 
         public async Task Redeploy()
@@ -41,8 +41,8 @@ namespace WeCollect.App
                 var contract = await _container.Documents.Contracts.Get(contractArtifact.Id);
                 ContractPublisher publisher = new ContractPublisher(contractArtifact, _container);
 
-                Contract deployed = await publisher.Deploy();
-                await publisher.UpdateContractDocument(deployed, contract);
+                var (deployed, receipt) = await publisher.Deploy();
+                await publisher.UpdateContractDocument(deployed, contract, receipt);
 
             }
         }

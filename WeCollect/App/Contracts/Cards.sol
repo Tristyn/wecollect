@@ -1,13 +1,14 @@
 pragma solidity ^0.4.24;
+
 pragma experimental ABIEncoderV2;
 
 contract Cards {
     event OnCardCreated(
-        uint32 indexed id,
+        int32 indexed id,
         Card card
     );
     event OnBoughtCard(
-        uint32 indexed id,
+        int32 indexed id,
         Card card,
         uint256 buyingPrice,
         uint256 nextAskingPrice,
@@ -15,7 +16,7 @@ contract Cards {
         uint256 miningCollected
     );
     event OnBoughtMiningLevel(
-        uint32 indexed id,
+        int32 indexed id,
         Card card,
         uint256 wccPrice,
         uint256 miningCollected,
@@ -23,7 +24,7 @@ contract Cards {
     );
     
     event OnCardMiningCollected(
-        uint32 indexed id,
+        int32 indexed id,
         Card card,
         uint256 amount 
     );
@@ -34,13 +35,13 @@ contract Cards {
         address firstOwner;
         uint256 price;
         uint256 miningLastCollectedDate;
-        uint32 miningLevel;
-        uint32[7] parentCards;
+        int32 miningLevel;
+        int32[7] parentCards;
     }
 
 
-    mapping(uint32 => Card) cards;
-    uint32 cardsLength;
+    mapping(int32 => Card) cards;
+    int32 cardsLength;
 
     address owner;
 
@@ -51,7 +52,7 @@ contract Cards {
     function mintCard(Card card) public {
         require(msg.sender == owner);
 
-        uint32 cardId = cardsLength;
+        int32 cardId = cardsLength;
         cardsLength++;
 
         cards[cardId] = card;
@@ -59,7 +60,7 @@ contract Cards {
         emit OnCardCreated(cardId, card);
     }
 
-    function buyCard(uint32 cardId) public payable {
+    function buyCard(int32 cardId) public payable {
         Card memory card = cards[cardId];
 
         require(msg.value == card.price);
@@ -74,12 +75,12 @@ contract Cards {
             card: card,
             buyingPrice: msg.value,
             nextAskingPrice: getNextPrice(card),
-            miningRate: getMiningRate(card),
+            miningRatePerBlock: getMiningRate(card),
             miningCollected: 0
         });
     }
 
-    function buyCardMiningLevel(uint32 cardId) public payable {
+    function buyCardMiningLevel(int32 cardId) public payable {
         
         Card memory card = cards[cardId];
 
@@ -87,8 +88,8 @@ contract Cards {
 
         uint256 miningLevelPrice = getMiningLevelPrice(card);
 
-        require(msg.sender == card.owner);
-        require(msg.value == miningLevelPrice);
+        require(msg.sender == card.owner, "owner");
+        require(msg.value == miningLevelPrice, "payment");
         // actually require owner has WCC
         
         card = upgradeMiningLevel(card);
@@ -103,7 +104,7 @@ contract Cards {
         });
     }
 
-    function claimMining(uint32 cardId) public {
+    function claimMining(int32 cardId) public {
 
         Card memory card = cards[cardId];
 
