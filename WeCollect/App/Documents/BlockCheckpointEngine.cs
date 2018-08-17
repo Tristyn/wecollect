@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Documents;
+using Nethereum.RPC.Eth.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace WeCollect.App.Documents
         public async Task IncrementBlockId()
         {
             var checkpoint = BlockCheckpoint.Clone();
-            checkpoint.BlockId += 1;
+            checkpoint.BlockPosition += 1;
 
             try
             {
@@ -37,7 +38,7 @@ namespace WeCollect.App.Documents
                     throw;
                 
                 var gottenCheckpoint = await _documentDb.BlockCheckpoints.Get(checkpoint.Id);
-                if (gottenCheckpoint.BlockId < checkpoint.BlockId)
+                if (gottenCheckpoint.BlockPosition < checkpoint.BlockPosition)
                 {
                     throw;
                 }

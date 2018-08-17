@@ -1,6 +1,7 @@
 ﻿using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Web3;
 using System.Threading.Tasks;
 using WeCollect.App.Models;
 
@@ -22,21 +23,20 @@ namespace WeCollect.App.Web3
             string txnHash = await _container.Web3.Eth.DeployContract.SendRequestAsync(
                 _contractArtifact.Abi,
                 _contractArtifact.Bin,
-                _container.Web3Db.ServerAddress,
-                new HexBigInteger(4712388),
-                120);
+                _container.Config.Web3ServerAddress,
+                new HexBigInteger(4712388));
 
             TransactionReceipt receipt;
             do
             {
-                receipt = await _container.Web3Db.Web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(txnHash);
+                receipt = await _container.Web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(txnHash);
                 if (receipt == null)
                 {
                     await Task.Delay(1000);
                 }
             } while (receipt == null);
 
-            Contract contract = _container.Web3Db.Web3.Eth.GetContract(_contractArtifact.Abi, receipt.ContractAddress);
+            Contract contract = _container.Web3.Eth.GetContract(_contractArtifact.Abi, receipt.ContractAddress);
 
             return (contract, receipt);
         }

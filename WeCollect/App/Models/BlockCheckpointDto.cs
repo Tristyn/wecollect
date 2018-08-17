@@ -1,4 +1,5 @@
 ﻿using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace WeCollect.App.Models
 
         public override string Type => nameof(BlockCheckpointDto);
 
-        public BigInteger BlockId { get; set; }
+        public BigInteger BlockPosition { get; set; }
 
         public static string GetId(string name)
         {

@@ -36,10 +36,11 @@ namespace WeCollect.App.Models
 
         [JsonIgnore]
         public string AltLink { get; set; }
-
-        [JsonConverter(typeof(UnixDateTimeConverter))]
+        
         [JsonProperty(PropertyName = "_ts")]
-        public virtual DateTime Timestamp { get; internal set; }
+        private long _timestamp { get; } = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+        public DateTimeOffset Timestamp => DateTimeOffset.FromUnixTimeSeconds(_timestamp);
 
         [JsonProperty(PropertyName = "_etag")]
         public string ETag { get; }

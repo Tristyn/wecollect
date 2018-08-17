@@ -3,19 +3,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Bll;
 using WeCollect.App.Documents;
-using WeCollect.App.Extensions;
 using WeCollect.App.Web3;
-using WeCollect.Server.Hubs;
 
 namespace WeCollect
 {
@@ -61,6 +58,7 @@ namespace WeCollect
 
             // build the container
             Container = new Container();
+            var config = Container.Config = Configuration.Get<ServerConfiguration>();
 
             var web3 = Container.Web3 = new Nethereum.Web3.Web3(Configuration["web3Url"]);
 
@@ -79,9 +77,12 @@ namespace WeCollect
             var contractsInitializer = Container.ContractsInitializer = new ContractsInitializer(Container);
             await Container.ContractsInitializer.Initialize();
 
-            contracts.DocumentsByName = (await documents.GetAllContracts()).ToDictionary(contract => contract.Name);
+            var contractDocuments = await documents.GetAllContracts();
+            contracts.DocumentsByName = contractDocuments
+                .Where(contract => contract.Name != null)
+                .ToDictionary(contract => contract.Name);
 
-
+            
 
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 
@@ -89,8 +90,8 @@ namespace WeCollect
                 web3,
                 contracts,
                 cardsService,
-                Configuration["web3ServerAddress"],
-                Configuration["web3ServerPrivateKey"]);
+                config.Web3ServerAddress,
+                config.Web3ServerPrivateKey);
 
 
             var cardEventsController = Container.CardEventsController = new CardEventsController(Container);
@@ -102,8 +103,8 @@ namespace WeCollect
             var checkpointFactory = new BlockCheckpointFactory(web3, documents);
 
             // start checkpoint from contract blockid
-            var cardContractCreatedBlock = Container.ContractArtifacts.DocumentsByName[Container.ContractArtifacts.Cards.Name].TransactionReceipt.BlockNumber;
-            var checkpoint = await checkpointFactory.GetOrCreateCheckpoint("blockManagerCheckpoint", new BlockParameter(cardContractCreatedBlock));
+            var cardContractCreatedBlock = Container.ContractArtifacts.DocumentsByName[Container.ContractArtifacts.Cards.Name].TransactionReceipt.BlockNumber.Value;
+            var checkpoint = await checkpointFactory.GetOrCreateCheckpoint("blockManagerCheckpoint", cardContractCreatedBlock);
 
 
             var blockLoop = new NewBlockLoop(web3, checkpoint);

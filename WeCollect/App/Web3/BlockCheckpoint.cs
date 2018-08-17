@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using WeCollect.App.Documents;
 using WeCollect.App.Models;
@@ -19,7 +20,7 @@ namespace WeCollect.App.Web3
 
         IBlockEnumerator _blockEnumerator;
 
-        public BlockParameter Checkpoint => new BlockParameter(new HexBigInteger(_checkpointDto.BlockId));
+        public BlockParameter Checkpoint => new BlockParameter(new HexBigInteger(_checkpointDto.BlockPosition));
         public Nethereum.Web3.Web3 _web3;
 
 
@@ -31,16 +32,15 @@ namespace WeCollect.App.Web3
             _checkpointDto = checkpointDto;
         }
 
-        public static async Task<BlockCheckpoint> Create(Nethereum.Web3.Web3 web3, CardDocumentDb documents, IBlockEnumerator blockEnumerator, string checkpointName)
+        public static async Task<BlockCheckpoint> Create(Nethereum.Web3.Web3 web3, CardDocumentDb documents, BlockCheckpointDto checkpoint, IBlockEnumerator blockEnumerator, string checkpointName)
         {
-            var checkpoint = await documents.BlockCheckpoints.Get(BlockCheckpointDto.GetId(checkpointName));
             return new BlockCheckpoint(web3, documents, blockEnumerator, checkpoint);
         }
 
         public async Task MoveNext()
         {
             var next = JsonConvert.DeserializeObject<BlockCheckpointDto>(JsonConvert.SerializeObject(_checkpointDto));
-            next.BlockId += 1;
+            next.BlockPosition += 1;
 
 
 
@@ -94,34 +94,40 @@ namespace WeCollect.App.Web3
             _documents = documents;
         }
 
-        public async Task<BlockCheckpoint> GetOrCreateCheckpoint(string checkpointName, BlockParameter startBlock)
+        public async Task<BlockCheckpoint> GetOrCreateCheckpoint(string checkpointName, BigInteger startBlock)
         {
-            BlockCheckpointDto checkpointDto;
+            BlockCheckpointDto checkpointDoc;
 
             try
             {
-                checkpointDto = await _documents.BlockCheckpoints.Get(BlockCheckpointDto.GetId(checkpointName));
+                checkpointDoc = await _documents.BlockCheckpoints.Get(BlockCheckpointDto.GetId(checkpointName));
             }
             catch (DocumentClientException ex)
             {
-                if (ex.IsNotFound())
-                {
-                    checkpointDto = await CreateCheckpoint(checkpointName, startBlock);
-                }
-                else
+                if (!ex.IsNotFound())
                 {
                     throw;
                 }
+                else
+                {
+                    checkpointDoc = await CreateCheckpoint(checkpointName, startBlock);
+                }
             }
 
-            var checkpoint = await BlockCheckpoint.Create(_web3, _documents, new BlockEnumerator(_web3, checkpointDto.BlockId), checkpointName);
 
+            var blockId = checkpointDoc.BlockPosition;
+
+            var checkpoint = await BlockCheckpoint.Create(_web3, _documents, checkpointDoc, new BlockEnumerator(_web3, checkpointDoc.BlockPosition), checkpointName);
             return checkpoint;
         }
 
-        private async Task<BlockCheckpointDto> CreateCheckpoint(string checkpointName, BlockParameter startBlock)
+        private async Task<BlockCheckpointDto> CreateCheckpoint(string checkpointName, BigInteger startBlock)
         {
-            var checkpoint = new BlockCheckpointDto { };
+            var checkpoint = new BlockCheckpointDto
+            {
+                Name = checkpointName,
+                BlockPosition = startBlock
+            };
 
             await _documents.BlockCheckpoints.Create(checkpoint);
 

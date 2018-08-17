@@ -9,6 +9,8 @@ namespace WeCollect.App
 {
     public class Container
     {
+        public ServerConfiguration Config { get; set; }
+
         public Nethereum.Web3.Web3 Web3 { get; set; }
 
         public Web3Db Web3Db { get; set; }

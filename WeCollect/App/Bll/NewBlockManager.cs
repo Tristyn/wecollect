@@ -21,7 +21,7 @@ namespace WeCollect.App.Bll
 
         public NewBlockManager(Container container, CardEventsController cardEventsController)
         {
-            var cards = container.Web3Db.Web3.Eth.GetContract(container.ContractArtifacts.Cards.Abi, container.Web3Db.Cards.ContractHandler.ContractAddress);
+            var cards = container.Web3.Eth.GetContract(container.ContractArtifacts.Cards.Abi, container.Web3Db.Cards.ContractHandler.ContractAddress);
 
             _cardCreatedEvent = cards.GetEvent<OnCardCreatedEventDTO>("OnCardCreated");
             _boughtCardEvent = cards.GetEvent<OnBoughtCardEventDTO>("OnBoughtCard");
