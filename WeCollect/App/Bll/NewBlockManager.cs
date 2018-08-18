@@ -19,9 +19,9 @@ namespace WeCollect.App.Bll
         private readonly Event<OnBoughtMiningLevelEventDTO> _boughtMiningLevelEvent;
         private readonly Event<OnCardMiningCollectedEventDTO> _cardMiningCollectedEvent;
 
-        private readonly CardEventsController _cardsController;
+        private readonly ContractEventsController _cardsController;
 
-        public NewBlockManager(Container container, CardEventsController cardEventsController)
+        public NewBlockManager(Container container, ContractEventsController cardEventsController)
         {
             var cards = container.Web3.Eth.GetContract(container.ContractArtifacts.Cards.Abi, container.Web3Db.Cards.ContractHandler.ContractAddress);
 

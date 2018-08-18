@@ -13,7 +13,7 @@ namespace WeCollect.App.Models
     {
         public Int32 Id { get; set; }
 
-        public CardDto Card { get; set; }
+        //public CardDto Card { get; set; }
 
         public HexBigInteger WccPrice { get; set; }
 

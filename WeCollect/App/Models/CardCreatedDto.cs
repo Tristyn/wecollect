@@ -12,6 +12,6 @@ namespace WeCollect.App.Models
     {
         public int Id { get; set; }
         
-        public CardDto Card { get; set; }
+        //public CardDto Card { get; set; }
     }
 }

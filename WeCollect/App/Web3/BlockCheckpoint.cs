@@ -100,7 +100,7 @@ namespace WeCollect.App.Web3
         {
             BlockCheckpointDto checkpointDoc;
 
-            if (await _documents.BlockCheckpoints.Exists(checkpointName))
+            if (await _documents.BlockCheckpoints.Exists(BlockCheckpointDto.GetId(checkpointName)))
             {
                 checkpointDoc = await _documents.BlockCheckpoints.Get(BlockCheckpointDto.GetId(checkpointName));
             }

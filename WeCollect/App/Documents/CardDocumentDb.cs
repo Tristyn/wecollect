@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;
+using WeCollect.Server.Models;
 
 namespace WeCollect.App.Documents
 {
@@ -66,9 +67,9 @@ namespace WeCollect.App.Documents
                 .ToListAsync();
         }
 
-        public Task<IEnumerable<CardDto>> GetCardSet(string name)
+        public async Task<IEnumerable<CardDto>> GetCardSet(string name)
         {
-            return _client.CreateDocumentQuery<CardDto>(CollectionLink)
+            return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
                 .Where(card => card.Set == name)
                 .ToListAsync();
         }

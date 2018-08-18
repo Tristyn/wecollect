@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Models;
+using WeCollect.Server.Models;
 
 namespace WeCollect.Server.Controllers
 {

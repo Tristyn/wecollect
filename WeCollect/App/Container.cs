@@ -25,6 +25,6 @@ namespace WeCollect.App
 
         public CardsService CardsContractMethods { get; set; }
 
-        public CardEventsController CardEventsController { get; set; }
+        public ContractEventsController CardEventsController { get; set; }
     }
 }

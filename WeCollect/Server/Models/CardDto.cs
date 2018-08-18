@@ -2,8 +2,9 @@
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Numerics;
+using WeCollect.App.Models;
 
-namespace WeCollect.App.Models
+namespace WeCollect.Server.Models
 {
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class CardDto : Document

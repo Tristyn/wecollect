@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace WeCollect.App.Bll
 {
-    public class CardEventsController
+    public class ContractEventsController
     {
         private readonly Container _container;
 
-        public CardEventsController(Container container)
+        public ContractEventsController(Container container)
         {
             _container = container;
         }

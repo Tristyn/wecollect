@@ -97,7 +97,7 @@ namespace WeCollect
                 config.Web3ServerPrivateKey);
 
 
-            var cardEventsController = Container.CardEventsController = new CardEventsController(Container);
+            var cardEventsController = Container.CardEventsController = new ContractEventsController(Container);
 
             var newBlockManager = new NewBlockManager(Container, cardEventsController);
 
@@ -110,9 +110,17 @@ namespace WeCollect
             var checkpoint = await checkpointFactory.GetOrCreateCheckpoint("blockManagerCheckpoint", cardContractCreatedBlock);
 
 
+            // Begin BlockLoop
             var blockLoop = new NewBlockLoop(web3, checkpoint);
             blockLoop.Start();
             var _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock, ex => { Debugger.Break(); return Task.CompletedTask; } ));
+
+
+
+
+
+            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
