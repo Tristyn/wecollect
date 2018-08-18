@@ -8,6 +8,7 @@ using WeCollect.Server.Models;
 
 namespace WeCollect.Server.Controllers
 {
+    [Route("/")]
     public class HomeController : Controller
     {
         private readonly Container _container;
@@ -20,7 +21,7 @@ namespace WeCollect.Server.Controllers
         public const string CardRoute = "Card";
         public const string UniverseRoute = "Universe";
 
-        [Route("Index", Name = UniverseRoute)]
+        [Route("index", Name = UniverseRoute)]
         public Task<IActionResult> Index()
         {
             return Set("universe");
@@ -41,18 +42,6 @@ namespace WeCollect.Server.Controllers
         {
             CardDto card = await _container.Documents.Cards.Get(CardDto.GetId(name));
             return View(card);
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -4,6 +4,7 @@ using Nethereum.RPC.Eth.DTOs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -94,6 +95,7 @@ namespace WeCollect.App.Web3
             _documents = documents;
         }
 
+        [DebuggerHidden]
         public async Task<BlockCheckpoint> GetOrCreateCheckpoint(string checkpointName, BigInteger startBlock)
         {
             BlockCheckpointDto checkpointDoc;

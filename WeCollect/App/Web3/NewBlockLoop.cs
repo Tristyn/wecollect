@@ -29,10 +29,9 @@ namespace WeCollect.App.Web3
             {
                 try
                 {
-                    if (!await _blockCheckpoint.BlockExistsOnChain())
+                    while (!await _blockCheckpoint.BlockExistsOnChain())
                     {
                         await Task.Delay(TimeSpan.FromSeconds(30));
-                        continue;
                     }
 
                     await callback(_blockCheckpoint.Checkpoint.BlockNumber.Value);

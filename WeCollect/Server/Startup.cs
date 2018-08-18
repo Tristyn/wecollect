@@ -8,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Bll;
 using WeCollect.App.Documents;
@@ -58,6 +60,7 @@ namespace WeCollect
 
             // build the container
             Container = new Container();
+            services.AddSingleton(Container);
             var config = Container.Config = Configuration.Get<ServerConfiguration>();
 
             var web3 = Container.Web3 = new Nethereum.Web3.Web3(Configuration["web3Url"]);
@@ -82,7 +85,7 @@ namespace WeCollect
                 .Where(contract => contract.Name != null)
                 .ToDictionary(contract => contract.Name);
 
-            
+
 
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 
@@ -108,9 +111,8 @@ namespace WeCollect
 
 
             var blockLoop = new NewBlockLoop(web3, checkpoint);
-
-
-            services.AddSingleton(Container);
+            blockLoop.Start();
+            var _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock, ex => { Debugger.Break(); return Task.CompletedTask; } ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

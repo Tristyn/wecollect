@@ -4,8 +4,10 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WeCollect.App.Bll
@@ -14,8 +16,8 @@ namespace WeCollect.App.Bll
     {
         private readonly Event<OnCardCreatedEventDTO> _cardCreatedEvent;
         private readonly Event<OnBoughtCardEventDTO> _boughtCardEvent;
-        private readonly Event<OnCardMiningCollectedEventDTO> _cardMiningCollected;
-        private readonly Event<OnBoughtMiningLevelEventDTO> _boughtMiningLevel;
+        private readonly Event<OnBoughtMiningLevelEventDTO> _boughtMiningLevelEvent;
+        private readonly Event<OnCardMiningCollectedEventDTO> _cardMiningCollectedEvent;
 
         private readonly CardEventsController _cardsController;
 
@@ -25,38 +27,59 @@ namespace WeCollect.App.Bll
 
             _cardCreatedEvent = cards.GetEvent<OnCardCreatedEventDTO>("OnCardCreated");
             _boughtCardEvent = cards.GetEvent<OnBoughtCardEventDTO>("OnBoughtCard");
-            _boughtMiningLevel = cards.GetEvent<OnBoughtMiningLevelEventDTO>("OnBoughtMiningLevel");
-            _cardMiningCollected = cards.GetEvent<OnCardMiningCollectedEventDTO>("OnCardMiningCollected");
+            _boughtMiningLevelEvent = cards.GetEvent<OnBoughtMiningLevelEventDTO>("OnBoughtMiningLevel");
+            _cardMiningCollectedEvent = cards.GetEvent<OnCardMiningCollectedEventDTO>("OnCardMiningCollected");
             _cardsController = cardEventsController;
         }
     
         public async Task OnBlock(BigInteger blockId)
         {
-            var blockParam = new BlockParameter(new HexBigInteger(blockId));
-            var blockFilter = new NewFilterInput { FromBlock = blockParam, ToBlock = blockParam };
-
-            var cardsCreated = await _cardCreatedEvent.GetAllChanges(blockFilter);
-            foreach (var cardCreated in cardsCreated)
+            var cardCreatedFilter = _cardCreatedEvent.CreateFilterInput(blockId);
+            var boughtCardFilter = _boughtCardEvent.CreateFilterInput(blockId);
+            var boughtMiningLevelFilter = _boughtMiningLevelEvent.CreateFilterInput(blockId);
+            var miningCollectedFilter = _cardMiningCollectedEvent.CreateFilterInput(blockId);
+            
+            while (true)
             {
-                await _cardsController.OnCardCreated(cardCreated);
-            }
+                try
+                {
+                    var cardsCreated = await _cardCreatedEvent.GetAllChanges(cardCreatedFilter);
+                    var boughtCards = await _boughtCardEvent.GetAllChanges(boughtCardFilter);
+                    var boughtMiningLevels = await _boughtMiningLevelEvent.GetAllChanges(boughtMiningLevelFilter);
+                    var cardsMiningCollected = await _cardMiningCollectedEvent.GetAllChanges(miningCollectedFilter);
 
-            var boughtCards = await _boughtCardEvent.GetAllChanges(blockFilter);
-            foreach(var boughtCard in boughtCards)
-            {
-                await _cardsController.OnCardBought(boughtCard);
-            }
 
-            var boughtMiningLevels = await _boughtMiningLevel.GetAllChanges(blockFilter);
-            foreach(var boughtMiningLevel in boughtMiningLevels)
-            {
-                await _cardsController.OnBoughtMiningLevel(boughtMiningLevel);
-            }
-
-            var cardsMiningCollected = await _cardMiningCollected.GetAllChanges(blockFilter);
-            foreach(var cardMiningCollected in cardsMiningCollected)
-            {
-                await _cardsController.OnCardMiningCollected(cardsMiningCollected);
+                    foreach (var cardCreated in cardsCreated)
+                    {
+                        await _cardsController.OnCardCreated(cardCreated);
+                    }
+                    foreach (var boughtCard in boughtCards)
+                    {
+                        await _cardsController.OnCardBought(boughtCard);
+                    }
+                    foreach (var boughtMiningLevel in boughtMiningLevels)
+                    {
+                        await _cardsController.OnBoughtMiningLevel(boughtMiningLevel);
+                    }
+                    foreach (var cardMiningCollected in cardsMiningCollected)
+                    {
+                        await _cardsController.OnCardMiningCollected(cardsMiningCollected);
+                    }
+                    break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+                catch (Exception ex)
+#pragma warning restore CS0168 // Variable is declared but never used
+                {
+                    if (Debugger.IsAttached)
+                    {
+                        Debugger.Break();
+                    }
+                    else
+                    {
+                        Thread.Sleep(5*1024);
+                    }
+                }
             }
         }
     }

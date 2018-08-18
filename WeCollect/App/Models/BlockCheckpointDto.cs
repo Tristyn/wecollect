@@ -11,11 +11,14 @@ namespace WeCollect.App.Models
 
     public class BlockCheckpointDto : Document
     {
+        private BigInteger _blockPosition;
+
         public override string Name { get; set; }
 
         public override string Type => nameof(BlockCheckpointDto);
 
-        public BigInteger BlockPosition { get; set; }
+        public BigInteger BlockPosition { get => _blockPosition;
+            set => _blockPosition = value; }
 
         public static string GetId(string name)
         {

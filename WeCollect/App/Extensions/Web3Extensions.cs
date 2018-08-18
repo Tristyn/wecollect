@@ -15,7 +15,7 @@ namespace Nethereum.Web3
                 durationInSeconds);
             if (!unlockAccountResult)
             {
-                throw new Exception("Failed to unlock server account");
+                //throw new Exception("Failed to unlock server account");
             }
         }
     }

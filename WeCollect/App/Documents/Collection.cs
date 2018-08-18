@@ -35,8 +35,8 @@ namespace WeCollect.App.Documents
         public async Task Set(T document, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
-            
-            var resp = await _client.ReplaceDocumentAsync(CollectionLink,document, AccessConditionMatch(document));
+
+            var resp = await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, document.Id), document);
         }
 
         /// <exception cref="DocumentClientException"/>
