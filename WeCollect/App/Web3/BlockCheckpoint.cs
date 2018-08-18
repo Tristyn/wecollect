@@ -100,22 +100,28 @@ namespace WeCollect.App.Web3
         {
             BlockCheckpointDto checkpointDoc;
 
-            try
+            if (await _documents.BlockCheckpoints.Exists(checkpointName))
             {
                 checkpointDoc = await _documents.BlockCheckpoints.Get(BlockCheckpointDto.GetId(checkpointName));
             }
-            catch (DocumentClientException ex)
+            else
             {
-                if (!ex.IsNotFound())
-                {
-                    throw;
-                }
-                else
+                try
                 {
                     checkpointDoc = await CreateCheckpoint(checkpointName, startBlock);
                 }
+                catch (DocumentClientException ex)
+                {
+                    if (!ex.IsNotFound())
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        checkpointDoc = await _documents.BlockCheckpoints.Get(BlockCheckpointDto.GetId(checkpointName));
+                    }
+                }
             }
-
 
             var blockId = checkpointDoc.BlockPosition;
 
