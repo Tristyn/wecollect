@@ -15,6 +15,7 @@ using WeCollect.App;
 using WeCollect.App.Bll;
 using WeCollect.App.Documents;
 using WeCollect.App.Web3;
+using WeCollect.Server.Models;
 
 namespace WeCollect
 {
@@ -75,6 +76,7 @@ namespace WeCollect
                     null,
                     Microsoft.Azure.Documents.ConsistencyLevel.Session),
                 Container);
+            await documents.EnsureDbExists();
 
             // Initialize contracts
             var contractsInitializer = Container.ContractsInitializer = new ContractsInitializer(Container);
@@ -85,8 +87,6 @@ namespace WeCollect
                 .Where(contract => contract.Name != null)
                 .ToDictionary(contract => contract.Name);
 
-
-
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 
             Web3Db web3Db = Container.Web3Db = new Web3Db(
@@ -96,11 +96,15 @@ namespace WeCollect
                 config.Web3ServerAddress,
                 config.Web3ServerPrivateKey);
 
+            //Seed
+            var cardFactory = new CardFactory(web3Db, documents, Container.Config);
+            services.AddSingleton(cardFactory);
+            await Seed.DoSeed(cardFactory);
+
 
             var cardEventsController = Container.CardEventsController = new ContractEventsController(Container);
 
             var newBlockManager = new NewBlockManager(Container, cardEventsController);
-
 
 
             var checkpointFactory = new BlockCheckpointFactory(web3, documents);
@@ -113,13 +117,13 @@ namespace WeCollect
             // Begin BlockLoop
             var blockLoop = new NewBlockLoop(web3, checkpoint);
             blockLoop.Start();
-            var _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock, ex => { Debugger.Break(); return Task.CompletedTask; } ));
+            var _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock, ex => { Debugger.Break(); return Task.CompletedTask; }));
 
 
 
 
 
-            
+
 
         }
 

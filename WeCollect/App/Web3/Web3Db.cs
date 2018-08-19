@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Contracts.Cards;
+using Contracts.Contracts.Cards.ContractDefinition;
 using Contracts.Contracts.Test;
+using Nethereum.Contracts;
 using Nethereum.Web3;
 
 namespace WeCollect.App.Web3
@@ -16,7 +18,10 @@ namespace WeCollect.App.Web3
         public string ServerAddress { get; }
         public string ServerPrivateKey { get; }
 
-
+        public Event<OnCardCreatedEventDTO> CardCreatedEvent { get; set; }
+        public Event<OnBoughtCardEventDTO> BoughtCardEvent { get; set; }
+        public Event<OnBoughtMiningLevelEventDTO> BoughtMiningLevelEvent { get; set; }
+        public Event<OnCardMiningCollectedEventDTO> CardMiningCollectedEvent { get; set; }
 
         public Web3Db(
             Nethereum.Web3.Web3 web3,
@@ -30,6 +35,14 @@ namespace WeCollect.App.Web3
             Cards = cardsService;
             ServerAddress = serverAddress;
             ServerPrivateKey = serverPrivateKey;
+
+
+            var cards = web3.Eth.GetContract(contracts.Cards.Abi, cardsService.ContractHandler.ContractAddress);
+            
+            CardCreatedEvent = cards.GetEvent<OnCardCreatedEventDTO>("OnCardCreated");
+            BoughtCardEvent = cards.GetEvent<OnBoughtCardEventDTO>("OnBoughtCard");
+            BoughtMiningLevelEvent = cards.GetEvent<OnBoughtMiningLevelEventDTO>("OnBoughtMiningLevel");
+            CardMiningCollectedEvent = cards.GetEvent<OnCardMiningCollectedEventDTO>("OnCardMiningCollected");
         }
     }
 }

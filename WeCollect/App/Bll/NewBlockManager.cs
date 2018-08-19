@@ -9,44 +9,37 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using WeCollect.App.Web3;
 
 namespace WeCollect.App.Bll
 {
     public class NewBlockManager
     {
-        private readonly Event<OnCardCreatedEventDTO> _cardCreatedEvent;
-        private readonly Event<OnBoughtCardEventDTO> _boughtCardEvent;
-        private readonly Event<OnBoughtMiningLevelEventDTO> _boughtMiningLevelEvent;
-        private readonly Event<OnCardMiningCollectedEventDTO> _cardMiningCollectedEvent;
 
         private readonly ContractEventsController _cardsController;
+        private readonly Web3Db _web3;
 
         public NewBlockManager(Container container, ContractEventsController cardEventsController)
         {
-            var cards = container.Web3.Eth.GetContract(container.ContractArtifacts.Cards.Abi, container.Web3Db.Cards.ContractHandler.ContractAddress);
-
-            _cardCreatedEvent = cards.GetEvent<OnCardCreatedEventDTO>("OnCardCreated");
-            _boughtCardEvent = cards.GetEvent<OnBoughtCardEventDTO>("OnBoughtCard");
-            _boughtMiningLevelEvent = cards.GetEvent<OnBoughtMiningLevelEventDTO>("OnBoughtMiningLevel");
-            _cardMiningCollectedEvent = cards.GetEvent<OnCardMiningCollectedEventDTO>("OnCardMiningCollected");
+            _web3 = container.Web3Db;
             _cardsController = cardEventsController;
         }
     
         public async Task OnBlock(BigInteger blockId)
         {
-            var cardCreatedFilter = _cardCreatedEvent.CreateFilterInput(blockId);
-            var boughtCardFilter = _boughtCardEvent.CreateFilterInput(blockId);
-            var boughtMiningLevelFilter = _boughtMiningLevelEvent.CreateFilterInput(blockId);
-            var miningCollectedFilter = _cardMiningCollectedEvent.CreateFilterInput(blockId);
+            var cardCreatedFilter = _web3.CardCreatedEvent.CreateFilterInput(blockId);
+            var boughtCardFilter = _web3.BoughtCardEvent.CreateFilterInput(blockId);
+            var boughtMiningLevelFilter = _web3.BoughtMiningLevelEvent.CreateFilterInput(blockId);
+            var miningCollectedFilter = _web3.CardMiningCollectedEvent.CreateFilterInput(blockId);
             
             while (true)
             {
                 try
                 {
-                    var cardsCreated = await _cardCreatedEvent.GetAllChanges(cardCreatedFilter);
-                    var boughtCards = await _boughtCardEvent.GetAllChanges(boughtCardFilter);
-                    var boughtMiningLevels = await _boughtMiningLevelEvent.GetAllChanges(boughtMiningLevelFilter);
-                    var cardsMiningCollected = await _cardMiningCollectedEvent.GetAllChanges(miningCollectedFilter);
+                    var cardsCreated = await _web3.CardCreatedEvent.GetAllChanges(cardCreatedFilter);
+                    var boughtCards = await _web3.BoughtCardEvent.GetAllChanges(boughtCardFilter);
+                    var boughtMiningLevels = await _web3.BoughtMiningLevelEvent.GetAllChanges(boughtMiningLevelFilter);
+                    var cardsMiningCollected = await _web3.CardMiningCollectedEvent.GetAllChanges(miningCollectedFilter);
 
 
                     foreach (var cardCreated in cardsCreated)

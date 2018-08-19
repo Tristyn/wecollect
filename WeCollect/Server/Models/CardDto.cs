@@ -31,7 +31,7 @@ namespace WeCollect.Server.Models
         public DateTimeOffset LastMiningCollectedDate { get; set; }
 
         public int MiningLevel { get; set; } = 1;
-        
+
         /// <summary>
         /// Max Length 7
         /// </summary>
@@ -79,11 +79,13 @@ namespace WeCollect.Server.Models
 
         public string FirstOwnerName { get; set; }
 
+        public string FirstOwnerAddress { get; set; }
+
         public CardSpecDto ToCardSpec()
         {
             return new CardSpecDto
             {
-                Id = Id,
+                Id = CardsContractId,
                 Name = Name
             };
         }

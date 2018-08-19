@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;
@@ -30,16 +31,30 @@ namespace WeCollect.App.Documents
         public Collection<Models.BlockCheckpointDto> BlockCheckpoints { get; }
 
         private volatile bool _dbExists;
-        
+
         public CardDocumentDb(DocumentClient client, Container container)
         {
             _client = client;
-            
+
             _contractArtifacts = container.ContractArtifacts;
-            
+
             Contracts = new Collection<ContractDto>(client, this);
             Cards = new Collection<CardDto>(_client, this);
             BlockCheckpoints = new Collection<Models.BlockCheckpointDto>(_client, this);
+
+            var existsEvent = new ManualResetEventSlim(false, 0);
+            var _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await EnsureDbExists();
+                }
+                finally
+                {
+                    existsEvent.Set();
+                }
+            });
+            existsEvent.Wait();
         }
 
         public async ValueTask EnsureDbExists()

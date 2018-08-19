@@ -18,7 +18,7 @@ namespace WeCollect.App.Bll
 
         public async Task OnCardMiningCollected(List<EventLog<OnCardMiningCollectedEventDTO>> cardsMiningCollected)
         {
-
+            
         }
 
         public async Task OnBoughtMiningLevel(EventLog<OnBoughtMiningLevelEventDTO> boughtMiningLevel)
