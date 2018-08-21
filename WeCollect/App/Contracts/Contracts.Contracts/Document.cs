@@ -13,7 +13,7 @@ namespace WeCollect.App.Models
         {
             get
             {
-                return Type + Name;
+                return type + name;
             }
             set
             {
@@ -21,9 +21,9 @@ namespace WeCollect.App.Models
         }
 
         [JsonProperty(PropertyName = "name")]
-        public abstract string Name { get; set; }
+        public abstract string name { get; set; }
 
-        public abstract string Type { get; }
+        public abstract string type { get; }
         
         [JsonProperty(PropertyName = "ttl", NullValueHandling = NullValueHandling.Ignore)]
         public int? TimeToLive { get; set; }

@@ -84,8 +84,8 @@ namespace WeCollect
 
             var contractDocuments = await documents.GetAllContracts();
             contracts.DocumentsByName = contractDocuments
-                .Where(contract => contract.Name != null)
-                .ToDictionary(contract => contract.Name);
+                .Where(contract => contract.name != null)
+                .ToDictionary(contract => contract.name);
 
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 

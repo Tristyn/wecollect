@@ -11,7 +11,7 @@
 
 @model CardDto
 <form asp-controller="Admin" asp-action="CreateCard" method="post" class="form-horizontal">
-    @Html.LabelFor(_ => _.Name) <input asp-for="Name" />
-    @Html.LabelFor(_ => _.Set) <input asp-for="Set" />
+    @Html.LabelFor(_ => _.name) <input asp-for="name" />
+    @Html.LabelFor(_ => _.set) <input asp-for="set" />
     <button>Create Card</button>
 </form>

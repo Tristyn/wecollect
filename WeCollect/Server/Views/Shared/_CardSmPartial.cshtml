@@ -2,9 +2,9 @@
 @using WeCollect.Server.Controllers
 
 @{
-    for (int i = Model.Parents.Length; i > 0; i--)
+    for (int i = Model.parents.Length; i > 0; i--)
     {
-        var parent = Model.Parents[i];
+        var parent = Model.parents[i];
 
         <a> href="@Url.RouteUrl(HomeController.CardRoute)"></a> if (i != 0)
         {
@@ -22,16 +22,16 @@
         <br />
         <br />
 
-        Current price: @Html.ValueFor(model => model.PriceWei)
-        Next Price: @Html.ValueFor(model => model.NextPriceEth)
+        Current price: @Html.ValueFor(model => model.priceWei)
+        Next Price: @Html.ValueFor(model => model.nextPriceEth)
         Owner:
-        @if (Uri.IsWellFormedUriString(Model.Name, UriKind.Absolute))
+        @if (Uri.IsWellFormedUriString(Model.name, UriKind.Absolute))
         {
-            <a href="@Model.Name">@Model.Name</a>
+            <a href="@Model.name">@Model.name</a>
         }
         else
         {
-            @Model.Name
+            @Model.name
         }
     </div>
 </div>

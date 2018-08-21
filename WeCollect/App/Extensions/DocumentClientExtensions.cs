@@ -15,7 +15,7 @@ namespace System.Linq
         public static async Task<T> SingleOrLog<T>(this IQueryable<T> source)
         {
             IDocumentQuery<T> result = source.AsDocumentQuery();
-
+            
             T first = default;
 
             while (result.HasMoreResults)
@@ -50,7 +50,7 @@ namespace System.Linq
 
             T first = default;
 
-            while (result.HasMoreResults)
+            do
             {
                 FeedResponse<T> batch = await result.ExecuteNextAsync<T>();
                 foreach (T item in batch)
@@ -66,7 +66,7 @@ namespace System.Linq
                 }
 
                 break;
-            }
+            } while (result.HasMoreResults);
 
             if (first == default)
             {

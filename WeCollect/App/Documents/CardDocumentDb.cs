@@ -69,11 +69,18 @@ namespace WeCollect.App.Documents
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<CardDto>> GetCardSet(string name)
+        public async Task<IEnumerable<CardDto>> GetCardSet(string uriName)
         {
             return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
-                .Where(card => card.Set == name)
+                .Where(card => card.set == uriName)
                 .ToListAsync();
+        }
+
+        public async Task<CardDto> GetCardWithUriName(string uriName)
+        {
+            return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
+                .Where(card => card.type == nameof(CardDto) && card.uriName == uriName)
+                .SingleOrLog();
         }
     }
 }
