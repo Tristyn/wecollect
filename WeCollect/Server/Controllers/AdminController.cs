@@ -33,7 +33,7 @@ namespace WeCollect.Server.Controllers
         {
             await Container.Documents.Cards.Create(card);
 
-            return Redirect(Url.Action("Card", "Home", new { name = card.Name }));
+            return Redirect(Url.Action("Card", "Home", new { name = card.name }));
         }
     }
 }

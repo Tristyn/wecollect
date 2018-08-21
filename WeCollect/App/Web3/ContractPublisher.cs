@@ -50,7 +50,7 @@ namespace WeCollect.App.Web3
             var contractDocument = new ContractDto
             {
                 Id = _contractArtifact.Id,
-                Name = _contractArtifact.Name,
+                name = _contractArtifact.Name,
                 Abi = _contractArtifact.Abi,
                 Address = contract.Address,
                 
@@ -63,7 +63,7 @@ namespace WeCollect.App.Web3
         public async Task UpdateContractDocument(Contract etherContract, ContractDto contract, TransactionReceipt receipt)
         {
             contract.Id = _contractArtifact.Id;
-            contract.Name = _contractArtifact.Name;
+            contract.name = _contractArtifact.Name;
             contract.Abi = _contractArtifact.Abi;
             contract.Address = etherContract.Address;
 

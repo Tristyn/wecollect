@@ -23,24 +23,24 @@ namespace WeCollect.Server.Models
         /// <summary>
         /// Id in the Cards contract
         /// </summary>
-        public int CardsContractId { get; set; }
+        public int cardsContractId { get; set; }
 
         [JsonProperty(PropertyName = "owner")]
-        public string OwnerAddress { get; set; }
+        public string ownerAddress { get; set; }
 
         [JsonProperty("firstOwner")]
-        public string InitialOwnerAddress { get; set; }
+        public string initialOwnerAddress { get; set; }
 
-        public BigInteger PriceWei { get; set; }
+        public BigInteger priceWei { get; set; }
 
-        public DateTimeOffset LastMiningCollectedDate { get; set; }
+        public DateTimeOffset lastMiningCollectedDate { get; set; }
 
-        public int MiningLevel { get; set; } = 1;
+        public int miningLevel { get; set; } = 1;
 
         /// <summary>
         /// Max Length 7
         /// </summary>
-        public CardSpecDto[] Parents
+        public CardSpecDto[] parents
         {
             get
             {
@@ -48,11 +48,11 @@ namespace WeCollect.Server.Models
             }
             set
             {
-                if (Parents == null)
-                    throw new ArgumentNullException(nameof(Parents));
+                if (parents == null)
+                    throw new ArgumentNullException(nameof(parents));
 
-                if (Parents.Length > 7)
-                    throw new ArgumentOutOfRangeException(nameof(Parents), 7, null);
+                if (parents.Length > 7)
+                    throw new ArgumentOutOfRangeException(nameof(parents), 7, null);
 
                 _parents = value;
             }
@@ -62,31 +62,35 @@ namespace WeCollect.Server.Models
         // Contract Events 
         //
 
-        public BigInteger NextPriceEth { get; set; }
+        public BigInteger nextPriceEth { get; set; }
 
-        public BigInteger MiningRatePerBlockWcc { get; set; }
+        public BigInteger miningRatePerBlockWcc { get; set; }
 
-        public BigInteger TotalMiningCollectedWcc { get; set; }
+        public BigInteger totalMiningCollectedWcc { get; set; }
 
-        public BigInteger GetCurrentMiningCollectableWcc() { throw new NotImplementedException(); }
+        public BigInteger getCurrentMiningCollectableWcc() { throw new NotImplementedException(); }
 
         //
         // CosmosDB Data
         //
 
-        public override string Name { get; set; }
+        public override string name { get; set; }
 
-        public override string Type => nameof(CardDto);
+        public string uriName { get; set; }
 
-        public string Set { get; set; }
+        public override string type => nameof(CardDto);
 
-        public string OwnerName { get; set; }
+        public string set { get; set; }
 
-        public string FirstOwnerName { get; set; }
+        public string uriSet { get; set; }
 
-        public string FirstOwnerAddress { get; set; }
+        public string ownerName { get; set; }
 
-        public MintStatus MintingStatus { get; set; }
+        public string firstOwnerName { get; set; }
+
+        public string firstOwnerAddress { get; set; }
+
+        public MintStatus mintingStatus { get; set; }
 
         public enum MintStatus
         {
@@ -107,8 +111,8 @@ namespace WeCollect.Server.Models
         {
             return new CardSpecDto
             {
-                Id = CardsContractId,
-                Name = Name
+                Id = cardsContractId,
+                Name = name
             };
         }
 

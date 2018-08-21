@@ -127,7 +127,7 @@ namespace WeCollect.App.Web3
         {
             var checkpoint = new BlockCheckpointDto
             {
-                Name = checkpointName,
+                name = checkpointName,
                 BlockPosition = startBlock
             };
 

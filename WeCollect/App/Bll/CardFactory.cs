@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Contracts.Cards;
 using Contracts.Contracts.Cards.ContractDefinition;
@@ -7,6 +8,7 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using WeCollect.App.Documents;
+using WeCollect.App.Extensions;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;
 using WeCollect.Server.Models;
@@ -51,11 +53,12 @@ namespace WeCollect.App.Bll
                     
                     card = new CardDto
                     {
-                        Name = mintingCard.Name,
-                        LastMiningCollectedDate = mintingCard.LastMiningCollectedDate,
-                        MiningLevel = mintingCard.MiningLevel,
-                        PriceWei = mintingCard.PriceWei,
-                        MintingStatus = CardDto.MintStatus.MintingTransaction,
+                        name = mintingCard.Name,
+                        uriName = mintingCard.Name.ToUriSafeString(),
+                        lastMiningCollectedDate = mintingCard.LastMiningCollectedDate,
+                        miningLevel = mintingCard.MiningLevel,
+                        priceWei = mintingCard.PriceWei,
+                        mintingStatus = CardDto.MintStatus.MintingTransaction,
                     };
 
                     await _documentDb.Cards.Upsert(card);
@@ -94,7 +97,7 @@ namespace WeCollect.App.Bll
                 case MintingStatus.TransactionProcessedUpdatingDocument:
                     card = card ?? await _documentDb.Cards.Get(CardDto.GetId(mintingCard.Name));
 
-                    card.MintingStatus = CardDto.MintStatus.Complete;
+                    card.mintingStatus = CardDto.MintStatus.Complete;
                     await _documentDb.Cards.Replace(card);
 
                     goto case MintingStatus.Complete;
@@ -148,7 +151,7 @@ namespace WeCollect.App.Bll
             }
             //transaction failed? https://ethereum.stackexchange.com/questions/6007/how-can-the-transaction-status-from-a-thrown-error-be-detected-when-gas-can-be-e
 
-            if (cardDoc.MintingStatus == CardDto.MintStatus.MintingTransaction)
+            if (cardDoc.mintingStatus == CardDto.MintStatus.MintingTransaction)
             {
                 return MintingStatus.TransactionProcessedUpdatingDocument;
             }

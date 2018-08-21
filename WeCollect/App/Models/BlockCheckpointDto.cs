@@ -13,9 +13,9 @@ namespace WeCollect.App.Models
     {
         private BigInteger _blockPosition;
 
-        public override string Name { get; set; }
+        public override string name { get; set; }
 
-        public override string Type => nameof(BlockCheckpointDto);
+        public override string type => nameof(BlockCheckpointDto);
 
         public BigInteger BlockPosition { get => _blockPosition;
             set => _blockPosition = value; }
