@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Contracts.Contracts.Cards;
 using Contracts.Contracts.Cards.ContractDefinition;
 using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using WeCollect.App.Documents;
 using WeCollect.App.Models;
@@ -47,13 +48,7 @@ namespace WeCollect.App.Bll
 
                     break;
                 case MintingStatus.Start:
-
-
-                    var mintCardFunction = new MintCardFunction
-                    {
-                        Card = mintingCard.ToContractCardDto(),
-                        FromAddress = _serverAddress
-                    };
+                    
                     card = new CardDto
                     {
                         Name = mintingCard.Name,
@@ -61,7 +56,6 @@ namespace WeCollect.App.Bll
                         MiningLevel = mintingCard.MiningLevel,
                         PriceWei = mintingCard.PriceWei,
                         MintingStatus = CardDto.MintStatus.MintingTransaction,
-                        MintTransactionPayload = mintCardFunction,
                     };
 
                     await _documentDb.Cards.Upsert(card);
@@ -73,7 +67,10 @@ namespace WeCollect.App.Bll
 
                     await _web3.UnlockServerAccount(_serverAddress, _serverPrivateKey, 100);
 
-                    card.MintTransactionHash = await _cardMethods.MintCardRequestAsync(mintingCard.ToContractCardDto());
+                    var mintFunction = mintingCard.ToMintCardFunction();
+                    mintFunction.Gas = 750000;
+                    mintFunction.FromAddress = _serverAddress;
+                    card.MintTransactionHash = await _cardMethods.MintCardRequestAsync(mintFunction);
 
                     await _documentDb.Cards.Replace(card);
 
@@ -82,22 +79,23 @@ namespace WeCollect.App.Bll
                     card = card ?? await _documentDb.Cards.Get(CardDto.GetId(mintingCard.Name));
 
                     bool sleeping = false;
+                    TransactionReceipt mintTransactionReceipt = null;
                     do
                     {
-                        card.MintTransactionReceipt = await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(card.MintTransactionHash);
+                        mintTransactionReceipt = await _web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(card.MintTransactionHash);
                         if (sleeping)
                             await Task.Delay(1000);
                         sleeping = true;
-                    } while (card.MintTransactionReceipt?.BlockNumber == null);
+                    } while (mintTransactionReceipt?.BlockNumber == null);
 
-                    card.MintingStatus = CardDto.MintStatus.UpdatingDocument;
                     await _documentDb.Cards.Replace(card);
 
                     goto case MintingStatus.TransactionProcessedUpdatingDocument;
                 case MintingStatus.TransactionProcessedUpdatingDocument:
+                    card = card ?? await _documentDb.Cards.Get(CardDto.GetId(mintingCard.Name));
 
-                    var logs = card.MintTransactionReceipt.Logs;
-                    Debugger.Break();
+                    card.MintingStatus = CardDto.MintStatus.Complete;
+                    await _documentDb.Cards.Replace(card);
 
                     goto case MintingStatus.Complete;
                 case MintingStatus.Complete:
@@ -124,9 +122,12 @@ namespace WeCollect.App.Bll
             }
 
             var cardDoc = await _documentDb.Cards.Get(CardDto.GetId(name));
-            Debug.Assert(cardDoc.MintTransactionHash != null);
 
             // Transaction not sent?
+            if (cardDoc.MintTransactionHash == null)
+            {
+                return MintingStatus.TransactionHashSaved;
+            }
             var mempoolTransactionStatus = await _web3.Eth.Transactions.GetTransactionByHash.SendRequestAsync(cardDoc.MintTransactionHash);
             if (mempoolTransactionStatus == null)
             {

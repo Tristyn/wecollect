@@ -41,20 +41,7 @@ namespace WeCollect.App.Documents
             Contracts = new Collection<ContractDto>(client, this);
             Cards = new Collection<CardDto>(_client, this);
             BlockCheckpoints = new Collection<Models.BlockCheckpointDto>(_client, this);
-
-            var existsEvent = new ManualResetEventSlim(false, 0);
-            var _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await EnsureDbExists();
-                }
-                finally
-                {
-                    existsEvent.Set();
-                }
-            });
-            existsEvent.Wait();
+            EnsureDbExists().AsTask().Wait();
         }
 
         public async ValueTask EnsureDbExists()

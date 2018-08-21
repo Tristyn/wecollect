@@ -41,32 +41,6 @@ namespace Contracts.Contracts.Cards
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
     
-        public Task<string> MintCardRequestAsync(MintCardFunction mintCardFunction)
-        {
-             return ContractHandler.SendRequestAsync(mintCardFunction);
-        }
-
-        public Task<TransactionReceipt> MintCardRequestAndWaitForReceiptAsync(MintCardFunction mintCardFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(mintCardFunction, cancellationToken);
-        }
-
-        public Task<string> MintCardRequestAsync(ContractCardDto card)
-        {
-            var mintCardFunction = new MintCardFunction();
-                mintCardFunction.Card = card;
-            
-             return ContractHandler.SendRequestAsync(mintCardFunction);
-        }
-
-        public Task<TransactionReceipt> MintCardRequestAndWaitForReceiptAsync(ContractCardDto card, CancellationTokenSource cancellationToken = null)
-        {
-            var mintCardFunction = new MintCardFunction();
-                mintCardFunction.Card = card;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(mintCardFunction, cancellationToken);
-        }
-
         public Task<string> ClaimMiningRequestAsync(ClaimMiningFunction claimMiningFunction)
         {
              return ContractHandler.SendRequestAsync(claimMiningFunction);
@@ -119,6 +93,32 @@ namespace Contracts.Contracts.Cards
              return ContractHandler.SendRequestAndWaitForReceiptAsync(buyCardFunction, cancellationToken);
         }
 
+        public Task<string> BuyCard2RequestAsync(BuyCard2Function buyCard2Function)
+        {
+             return ContractHandler.SendRequestAsync(buyCard2Function);
+        }
+
+        public Task<TransactionReceipt> BuyCard2RequestAndWaitForReceiptAsync(BuyCard2Function buyCard2Function, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(buyCard2Function, cancellationToken);
+        }
+
+        public Task<string> BuyCard2RequestAsync(int cardId)
+        {
+            var buyCard2Function = new BuyCard2Function();
+                buyCard2Function.CardId = cardId;
+            
+             return ContractHandler.SendRequestAsync(buyCard2Function);
+        }
+
+        public Task<TransactionReceipt> BuyCard2RequestAndWaitForReceiptAsync(int cardId, CancellationTokenSource cancellationToken = null)
+        {
+            var buyCard2Function = new BuyCard2Function();
+                buyCard2Function.CardId = cardId;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(buyCard2Function, cancellationToken);
+        }
+
         public Task<string> BuyCardMiningLevelRequestAsync(BuyCardMiningLevelFunction buyCardMiningLevelFunction)
         {
              return ContractHandler.SendRequestAsync(buyCardMiningLevelFunction);
@@ -143,6 +143,42 @@ namespace Contracts.Contracts.Cards
                 buyCardMiningLevelFunction.CardId = cardId;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(buyCardMiningLevelFunction, cancellationToken);
+        }
+
+        public Task<string> MintCardRequestAsync(MintCardFunction mintCardFunction)
+        {
+             return ContractHandler.SendRequestAsync(mintCardFunction);
+        }
+
+        public Task<TransactionReceipt> MintCardRequestAndWaitForReceiptAsync(MintCardFunction mintCardFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(mintCardFunction, cancellationToken);
+        }
+
+        public Task<string> MintCardRequestAsync(string owner, string firstOwner, BigInteger price, BigInteger miningLastCollectedDate, int miningLevel, List<int> parentCards)
+        {
+            var mintCardFunction = new MintCardFunction();
+                mintCardFunction.Owner = owner;
+                mintCardFunction.FirstOwner = firstOwner;
+                mintCardFunction.Price = price;
+                mintCardFunction.MiningLastCollectedDate = miningLastCollectedDate;
+                mintCardFunction.MiningLevel = miningLevel;
+                mintCardFunction.ParentCards = parentCards;
+            
+             return ContractHandler.SendRequestAsync(mintCardFunction);
+        }
+
+        public Task<TransactionReceipt> MintCardRequestAndWaitForReceiptAsync(string owner, string firstOwner, BigInteger price, BigInteger miningLastCollectedDate, int miningLevel, List<int> parentCards, CancellationTokenSource cancellationToken = null)
+        {
+            var mintCardFunction = new MintCardFunction();
+                mintCardFunction.Owner = owner;
+                mintCardFunction.FirstOwner = firstOwner;
+                mintCardFunction.Price = price;
+                mintCardFunction.MiningLastCollectedDate = miningLastCollectedDate;
+                mintCardFunction.MiningLevel = miningLevel;
+                mintCardFunction.ParentCards = parentCards;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(mintCardFunction, cancellationToken);
         }
     }
 }

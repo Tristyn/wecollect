@@ -1,15 +1,24 @@
 pragma solidity ^0.4.24;
 
-pragma experimental ABIEncoderV2;
-
 contract Cards {
     event OnCardCreated(
         int32 indexed id,
-        Card card
+
+        address owner,
+        address firstOwner,
+        uint256 price,
+        uint256 miningLastCollectedDate,
+        int32 miningLevel,
+        int32[7] parentCards
     );
     event OnBoughtCard(
         int32 indexed id,
-        Card card,
+
+        address owner,
+        uint256 price,
+        uint256 miningLastCollectedDate,
+        int32 miningLevel,
+
         uint256 buyingPrice,
         uint256 nextAskingPrice,
         uint256 miningRatePerBlock,
@@ -17,7 +26,10 @@ contract Cards {
     );
     event OnBoughtMiningLevel(
         int32 indexed id,
-        Card card,
+        
+        uint256 miningLastCollectedDate,
+        int32 miningLevel,
+
         uint256 wccPrice,
         uint256 miningCollected,
         uint256 spentOnUpgrade
@@ -25,7 +37,11 @@ contract Cards {
     
     event OnCardMiningCollected(
         int32 indexed id,
-        Card card,
+
+        uint256 miningLastCollectedDate,
+        int32 miningLevel,
+
+        uint256 date,
         uint256 amount 
     );
 
@@ -43,27 +59,53 @@ contract Cards {
     mapping(int32 => Card) cards;
     int32 cardsLength;
 
-    address owner;
+    address _owner;
 
     constructor () public {
-        owner = msg.sender;
+        _owner = msg.sender;
     }
 
-    function mintCard(Card card) public {
-        require(msg.sender == owner);
+    function mintCard(
+        address owner,
+        address firstOwner,
+        uint256 price,
+        uint256 miningLastCollectedDate,
+        int32 miningLevel,
+        int32[7] parentCards
+    ) public {
+        require(msg.sender == _owner, "E1: msg.sender!=owner");
 
-        int32 cardId = cardsLength;
         cardsLength++;
+        int32 cardId = cardsLength;
 
-        cards[cardId] = card;
+        cards[cardId] = Card({
+            owner:owner,
+            firstOwner:firstOwner,
+            price:price,
+            miningLastCollectedDate:miningLastCollectedDate,
+            miningLevel:miningLevel,
+            parentCards:parentCards
+        });
 
-        emit OnCardCreated(cardId, card);
+        emit OnCardCreated(
+            cardId,
+            owner,
+            firstOwner,
+            price,
+            miningLastCollectedDate,
+            miningLevel,
+            parentCards
+        );
+    }
+
+    function buyCard2(int32 cardId) public {
+        
     }
 
     function buyCard(int32 cardId) public payable {
         Card memory card = cards[cardId];
 
-        require(msg.value == card.price);
+        require(msg.value == card.price, "E2: msg.value!=card.price");
         
 
         card.owner = msg.sender;
@@ -72,7 +114,12 @@ contract Cards {
 
         emit OnBoughtCard({
             id: cardId,
-            card: card,
+
+            owner:card.owner,
+            price:card.price,
+            miningLastCollectedDate:card.miningLastCollectedDate,
+            miningLevel:card.miningLevel,
+
             buyingPrice: msg.value,
             nextAskingPrice: getNextPrice(card),
             miningRatePerBlock: getMiningRate(card),
@@ -88,8 +135,8 @@ contract Cards {
 
         uint256 miningLevelPrice = getMiningLevelPrice(card);
 
-        require(msg.sender == card.owner, "owner");
-        require(msg.value == miningLevelPrice, "payment");
+        require(msg.sender == card.owner, "E3: msg.sender!=card.owner");
+        require(msg.value == miningLevelPrice, "E4:msg.value!=miningLevelPrice");
         // actually require owner has WCC
         
         card = upgradeMiningLevel(card);
@@ -97,7 +144,11 @@ contract Cards {
         // getMiningRate(card);
         emit OnBoughtMiningLevel({
             id: cardId,
-            card: card,
+            
+            //card
+            miningLastCollectedDate:card.miningLastCollectedDate,
+            miningLevel:card.miningLevel,
+
             wccPrice: oldPrice,
             miningCollected: 0,
             spentOnUpgrade: 0
@@ -110,7 +161,12 @@ contract Cards {
 
         emit OnCardMiningCollected({
             id: cardId,
-            card: card,
+
+            //card
+            miningLastCollectedDate:card.miningLastCollectedDate,
+            miningLevel:card.miningLevel,
+
+            date:block.timestamp,
             amount: 0
         });
     }

@@ -96,19 +96,11 @@ namespace WeCollect.Server.Models
             /// </summary>
             MintingTransaction = 1,
             /// <summary>
-            /// Querying transaction receipt and updating DB
-            /// </summary>
-            UpdatingDocument = 2,
-            /// <summary>
             /// Complete
             /// </summary>
-            Complete
+            Complete = 2
         }
 
-
-        public MintCardFunction MintTransactionPayload { get; set; }
-
-        public TransactionReceipt MintTransactionReceipt { get; set; }
         public string MintTransactionHash { get; set; }
 
         public CardSpecDto ToCardSpec()
