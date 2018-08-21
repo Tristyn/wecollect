@@ -27,7 +27,7 @@ namespace WeCollect.App.Documents
 
             try
             {
-                await _documentDb.BlockCheckpoints.Set(checkpoint);
+                await _documentDb.BlockCheckpoints.Replace(checkpoint);
                 var gottenCheckpoint = await _documentDb.BlockCheckpoints.Get(checkpoint.Id);
 
                 BlockCheckpoint = gottenCheckpoint;

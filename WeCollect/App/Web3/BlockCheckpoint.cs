@@ -23,19 +23,13 @@ namespace WeCollect.App.Web3
 
         public BlockParameter Checkpoint => new BlockParameter(new HexBigInteger(_checkpointDto.BlockPosition));
         public Nethereum.Web3.Web3 _web3;
-
-
-        private BlockCheckpoint(Nethereum.Web3.Web3 web3, CardDocumentDb documents, IBlockEnumerator blockEnumerator, BlockCheckpointDto checkpointDto)
+        
+        public BlockCheckpoint(Nethereum.Web3.Web3 web3, CardDocumentDb documents, IBlockEnumerator blockEnumerator, BlockCheckpointDto checkpointDto)
         {
             _web3 = web3;
             _documentDb = documents;
             _blockEnumerator = blockEnumerator;
             _checkpointDto = checkpointDto;
-        }
-
-        public static async Task<BlockCheckpoint> Create(Nethereum.Web3.Web3 web3, CardDocumentDb documents, BlockCheckpointDto checkpoint, IBlockEnumerator blockEnumerator, string checkpointName)
-        {
-            return new BlockCheckpoint(web3, documents, blockEnumerator, checkpoint);
         }
 
         public async Task MoveNext()
@@ -54,7 +48,7 @@ namespace WeCollect.App.Web3
 
                 var block = await _blockEnumerator.NextBlockAsync();
 
-                await _documentDb.BlockCheckpoints.Set(_checkpointDto);
+                await _documentDb.BlockCheckpoints.Replace(_checkpointDto);
             }
             catch (DocumentClientException ex)
             {
@@ -125,7 +119,7 @@ namespace WeCollect.App.Web3
 
             var blockId = checkpointDoc.BlockPosition;
 
-            var checkpoint = await BlockCheckpoint.Create(_web3, _documents, checkpointDoc, new BlockEnumerator(_web3, checkpointDoc.BlockPosition), checkpointName);
+            var checkpoint = new BlockCheckpoint(_web3, _documents, new BlockEnumerator(_web3, checkpointDoc.BlockPosition), checkpointDoc);
             return checkpoint;
         }
 

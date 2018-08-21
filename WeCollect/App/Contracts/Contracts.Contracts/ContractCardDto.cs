@@ -13,6 +13,21 @@ namespace Contracts.Contracts
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class ContractCardDto
     {
+        public ContractCardDto()
+        {
+
+        }
+
+        public ContractCardDto(HexBigInteger price, HexBigInteger miningLastCollectedDate, int miningLevel, int[] parentCards, string owner, string firstOwner)
+        {
+            Owner = owner;
+            FirstOwner = firstOwner;
+            Price = price ?? throw new ArgumentNullException(nameof(price));
+            MiningLastCollectedDate = miningLastCollectedDate ?? throw new ArgumentNullException(nameof(miningLastCollectedDate));
+            MiningLevel = miningLevel;
+            ParentCards = parentCards ?? throw new ArgumentNullException(nameof(parentCards));
+        }
+
         public string Owner { get; set; }
 
         public string FirstOwner { get; set; }

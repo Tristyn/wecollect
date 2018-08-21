@@ -5,6 +5,8 @@ using System.Numerics;
 using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Bll;
+using WeCollect.App.Extensions;
+using WeCollect.App.Models;
 
 namespace WeCollect.Server.Models
 {
@@ -12,14 +14,15 @@ namespace WeCollect.Server.Models
     {
         public static async Task DoSeed(CardFactory cardFactory)
         {
-            await cardFactory.CreateCard(new CardDto
+            await cardFactory.MintCard(new CardMintingDto()
             {
                 MiningLevel = 1,
-                PriceEth = 20,
-                LastMiningCollectedDate = DateTimeOffset.UtcNow
-            }, new CardFactory.CardOptions
+                PriceWei = Wei.FromEth(0.2m),
+                LastMiningCollectedDate = DateTimeOffset.UtcNow,
+                Name = "Universe",
+            },
+            new CardFactory.CardOptions
             {
-                
             });
         }
     }

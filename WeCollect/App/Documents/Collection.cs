@@ -32,7 +32,7 @@ namespace WeCollect.App.Documents
         }
 
         /// <exception cref="DocumentClientException"/>
-        public async Task Set(T document, bool ensureStatusCode = true)
+        public async Task Replace(T document, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
 

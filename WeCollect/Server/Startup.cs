@@ -97,7 +97,7 @@ namespace WeCollect
                 config.Web3ServerPrivateKey);
 
             //Seed
-            var cardFactory = new CardFactory(web3Db, documents, Container.Config);
+            var cardFactory = new CardFactory(web3Db, web3, documents, Container.Config);
             services.AddSingleton(cardFactory);
             await Seed.DoSeed(cardFactory);
 

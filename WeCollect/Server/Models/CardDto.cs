@@ -1,6 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Contracts.Contracts;
+using Contracts.Contracts.Cards.ContractDefinition;
+using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Linq;
 using System.Numerics;
 using WeCollect.App.Models;
 
@@ -26,7 +31,7 @@ namespace WeCollect.Server.Models
         [JsonProperty("firstOwner")]
         public string InitialOwnerAddress { get; set; }
 
-        public BigInteger PriceEth { get; set; }
+        public BigInteger PriceWei { get; set; }
 
         public DateTimeOffset LastMiningCollectedDate { get; set; }
 
@@ -63,7 +68,7 @@ namespace WeCollect.Server.Models
 
         public BigInteger TotalMiningCollectedWcc { get; set; }
 
-        public BigInteger CurrentMiningCollectableWcc => throw new NotImplementedException();
+        public BigInteger GetCurrentMiningCollectableWcc() { throw new NotImplementedException(); }
 
         //
         // CosmosDB Data
@@ -80,6 +85,31 @@ namespace WeCollect.Server.Models
         public string FirstOwnerName { get; set; }
 
         public string FirstOwnerAddress { get; set; }
+
+        public MintStatus MintingStatus { get; set; }
+
+        public enum MintStatus
+        {
+            /// <summary>
+            /// Doc exists in Db, MintTransactionHash is set and MAY OR MAY NOT
+            /// BE sent to the eth network.
+            /// </summary>
+            MintingTransaction = 1,
+            /// <summary>
+            /// Querying transaction receipt and updating DB
+            /// </summary>
+            UpdatingDocument = 2,
+            /// <summary>
+            /// Complete
+            /// </summary>
+            Complete
+        }
+
+
+        public MintCardFunction MintTransactionPayload { get; set; }
+
+        public TransactionReceipt MintTransactionReceipt { get; set; }
+        public string MintTransactionHash { get; set; }
 
         public CardSpecDto ToCardSpec()
         {

@@ -18,22 +18,22 @@ namespace WeCollect.App.Bll
 
         public async Task OnCardMiningCollected(List<EventLog<OnCardMiningCollectedEventDTO>> cardsMiningCollected)
         {
-            
+            await Task.Delay(0);
         }
 
         public async Task OnBoughtMiningLevel(EventLog<OnBoughtMiningLevelEventDTO> boughtMiningLevel)
         {
-
+            await Task.Delay(0);
         }
 
         public async Task OnCardBought(EventLog<OnBoughtCardEventDTO> boughtCard)
         {
-
+            await Task.Delay(0);
         }
 
         public async Task OnCardCreated(EventLog<OnCardCreatedEventDTO> eventLog)
         {
-
+            await Task.Delay(0);
         }
     }
 }
