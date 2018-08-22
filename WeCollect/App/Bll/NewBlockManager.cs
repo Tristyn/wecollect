@@ -56,7 +56,7 @@ namespace WeCollect.App.Bll
                     }
                     foreach (var cardMiningCollected in cardsMiningCollected)
                     {
-                        await _cardsController.OnCardMiningCollected(cardsMiningCollected);
+                        await _cardsController.OnCardMiningCollected(cardMiningCollected);
                     }
                     break;
                 }

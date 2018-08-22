@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeCollect.Server.Models;
 
 namespace WeCollect.Server.Hubs
 {
@@ -12,25 +13,25 @@ namespace WeCollect.Server.Hubs
     {
         public const string AllGroup = "All";
 
-        public async Task OnCardCreated(OnCardCreatedEventDTO cardCreated)
+        public async Task OnCardCreated(CardEventLog<OnCardCreatedEventDTO> cardCreated)
         {
             await Clients.Group(AllGroup)
                 .OnCardCreated(cardCreated);
         }
 
-        public async Task OnBoughtCard(OnBoughtCardEventDTO cardBought)
+        public async Task OnBoughtCard(CardEventLog<OnBoughtCardEventDTO> cardBought)
         {
             await Clients.Group(AllGroup)
                 .OnBoughtCard(cardBought);
         }
 
-        public async Task OnBoughtMiningLevel(OnBoughtMiningLevelEventDTO cardMiningLevelBought)
+        public async Task OnBoughtMiningLevel(CardEventLog<OnBoughtMiningLevelEventDTO> cardMiningLevelBought)
         {
             await Clients.Group(AllGroup)
                 .OnBoughtMiningLevel(cardMiningLevelBought);
         }
 
-        public async Task OnCardMiningCollected(OnCardMiningCollectedEventDTO cardMiningCollected)
+        public async Task OnCardMiningCollected(CardEventLog<OnCardMiningCollectedEventDTO> cardMiningCollected)
         {
             await Clients.Group(AllGroup)
                 .OnCardMiningCollected(cardMiningCollected);
@@ -39,12 +40,12 @@ namespace WeCollect.Server.Hubs
 
     public interface ICardHubClient
     {
-        Task OnCardCreated(OnCardCreatedEventDTO onCardCreated);
+        Task OnCardCreated(CardEventLog<OnCardCreatedEventDTO> onCardCreated);
 
-        Task OnBoughtCard(OnBoughtCardEventDTO onBoughtCard);
+        Task OnBoughtCard(CardEventLog<OnBoughtCardEventDTO> onBoughtCard);
 
-        Task OnBoughtMiningLevel(OnBoughtMiningLevelEventDTO onBoughtMiningLevel);
+        Task OnBoughtMiningLevel(CardEventLog<OnBoughtMiningLevelEventDTO> onBoughtMiningLevel);
 
-        Task OnCardMiningCollected(OnCardMiningCollectedEventDTO onCardMiningCollected);
+        Task OnCardMiningCollected(CardEventLog<OnCardMiningCollectedEventDTO> onCardMiningCollected);
     }
 }

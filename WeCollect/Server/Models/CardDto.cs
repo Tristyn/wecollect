@@ -105,7 +105,7 @@ namespace WeCollect.Server.Models
             Complete = 2
         }
 
-        public string MintTransactionHash { get; set; }
+        public string mintTransactionHash { get; set; }
 
         public CardSpecDto ToCardSpec()
         {

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Models;
+using WeCollect.Server.Hubs;
 using WeCollect.Server.Models;
 
 namespace WeCollect.Server.Controllers
@@ -13,9 +15,10 @@ namespace WeCollect.Server.Controllers
     {
         private readonly Container _container;
 
-        public HomeController(Container container)
+        public HomeController(Container container, IHubContext<CardHub, ICardHubClient> cardHub)
         {
             _container = container;
+            GlobalHubContext.CardHub = cardHub;
         }
 
         public const string CardRoute = "Card";

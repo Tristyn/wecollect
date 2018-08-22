@@ -2,7 +2,8 @@ pragma solidity ^0.4.24;
 
 contract Cards {
     event OnCardCreated(
-        int32 indexed id,
+        uint indexed blockId,
+        int32 id,
 
         address owner,
         address firstOwner,
@@ -12,7 +13,8 @@ contract Cards {
         int32[7] parentCards
     );
     event OnBoughtCard(
-        int32 indexed id,
+        uint indexed blockId,
+        int32 id,
 
         address owner,
         uint256 price,
@@ -25,7 +27,8 @@ contract Cards {
         uint256 miningCollected
     );
     event OnBoughtMiningLevel(
-        int32 indexed id,
+        uint indexed blockId,
+        int32 id,
         
         uint256 miningLastCollectedDate,
         int32 miningLevel,
@@ -36,7 +39,8 @@ contract Cards {
     );
     
     event OnCardMiningCollected(
-        int32 indexed id,
+        uint indexed blockId,
+        int32 id,
 
         uint256 miningLastCollectedDate,
         int32 miningLevel,
@@ -88,6 +92,7 @@ contract Cards {
         });
 
         emit OnCardCreated(
+            block.number,
             cardId,
             owner,
             firstOwner,
@@ -113,6 +118,7 @@ contract Cards {
 
 
         emit OnBoughtCard({
+            blockId: block.number,
             id: cardId,
 
             owner:card.owner,
@@ -143,6 +149,7 @@ contract Cards {
 
         // getMiningRate(card);
         emit OnBoughtMiningLevel({
+            blockId: block.number,
             id: cardId,
             
             //card
@@ -160,6 +167,7 @@ contract Cards {
         Card memory card = cards[cardId];
 
         emit OnCardMiningCollected({
+            blockId: block.number,
             id: cardId,
 
             //card

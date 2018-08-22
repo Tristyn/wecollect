@@ -28,7 +28,9 @@ namespace WeCollect.App.Documents
 
         public Collection<CardDto> Cards { get; }
 
-        public Collection<Models.BlockCheckpointDto> BlockCheckpoints { get; }
+        public Collection<EntityIdDto> EntityIds { get; }
+
+        public Collection<BlockCheckpointDto> BlockCheckpoints { get; }
 
         private volatile bool _dbExists;
 
@@ -40,7 +42,8 @@ namespace WeCollect.App.Documents
 
             Contracts = new Collection<ContractDto>(client, this);
             Cards = new Collection<CardDto>(_client, this);
-            BlockCheckpoints = new Collection<Models.BlockCheckpointDto>(_client, this);
+            EntityIds = new Collection<EntityIdDto>(_client, this);
+            BlockCheckpoints = new Collection<BlockCheckpointDto>(_client, this);
             EnsureDbExists().AsTask().Wait();
         }
 
@@ -80,6 +83,13 @@ namespace WeCollect.App.Documents
         {
             return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
                 .Where(card => card.type == nameof(CardDto) && card.uriName == uriName)
+                .SingleOrLog();
+        }
+
+        public async Task<CardDto> GetCardWithCardsContractId(int id)
+        {
+            return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
+                .Where(card => card.type == nameof(CardDto) && card.cardsContractId == id)
                 .SingleOrLog();
         }
     }

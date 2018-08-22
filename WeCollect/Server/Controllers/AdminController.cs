@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Models;
+using WeCollect.Server.Hubs;
 using WeCollect.Server.Models;
 
 namespace WeCollect.Server.Controllers
@@ -10,9 +12,10 @@ namespace WeCollect.Server.Controllers
     {
         public Container Container { get; }
 
-        public AdminController(Container container)
+        public AdminController(Container container, IHubContext<CardHub, ICardHubClient> cardHub)
         {
             Container = container;
+            GlobalHubContext.CardHub = cardHub;
         }
 
         public IActionResult Index()

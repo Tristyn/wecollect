@@ -86,7 +86,7 @@ namespace WeCollect
             contracts.DocumentsByName = contractDocuments
                 .Where(contract => contract.name != null)
                 .ToDictionary(contract => contract.name);
-
+            
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 
             Web3Db web3Db = Container.Web3Db = new Web3Db(
