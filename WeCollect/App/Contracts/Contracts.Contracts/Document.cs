@@ -9,7 +9,7 @@ namespace WeCollect.App.Models
     public abstract class Document
     {
         [JsonProperty(PropertyName = "id")]
-        public virtual string Id
+        public virtual string id
         {
             get
             {

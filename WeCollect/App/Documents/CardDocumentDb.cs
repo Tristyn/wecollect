@@ -28,7 +28,7 @@ namespace WeCollect.App.Documents
 
         public Collection<CardDto> Cards { get; }
 
-        public Collection<EntityIdDto> EntityIds { get; }
+        public Collection<IdCounterDto> EntityIds { get; }
 
         public Collection<BlockCheckpointDto> BlockCheckpoints { get; }
 
@@ -42,7 +42,7 @@ namespace WeCollect.App.Documents
 
             Contracts = new Collection<ContractDto>(client, this);
             Cards = new Collection<CardDto>(_client, this);
-            EntityIds = new Collection<EntityIdDto>(_client, this);
+            EntityIds = new Collection<IdCounterDto>(_client, this);
             BlockCheckpoints = new Collection<BlockCheckpointDto>(_client, this);
             EnsureDbExists().AsTask().Wait();
         }
@@ -63,7 +63,7 @@ namespace WeCollect.App.Documents
         public async Task<ContractDto> GetContractWithId(string id)
         {
             return await _client.CreateDocumentQuery<ContractDto>(CollectionLink)
-                .SingleOrLog(c => c.Id == id);
+                .SingleOrLog(c => c.id == id);
         }
 
         public async Task<IEnumerable<ContractDto>> GetAllContracts()
@@ -75,8 +75,15 @@ namespace WeCollect.App.Documents
         public async Task<IEnumerable<CardDto>> GetCardSet(string uriName)
         {
             return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
-                .Where(card => card.uriSet == uriName)
+                .Where(card => card.type == nameof(CardDto) && card.uriSet == uriName)
                 .ToListAsync();
+        }
+
+        public async Task<CardDto> GetCardWithName(string name)
+        {
+            return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
+                .Where(card => card.type == nameof(CardDto) && card.name == name)
+                .SingleOrLog();
         }
 
         public async Task<CardDto> GetCardWithUriName(string uriName)
@@ -91,6 +98,13 @@ namespace WeCollect.App.Documents
             return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
                 .Where(card => card.type == nameof(CardDto) && card.cardsContractId == id)
                 .SingleOrLog();
+        }
+
+        public async Task<IEnumerable<CardDto>> GetAllCards()
+        {
+            return await _client.CreateDocumentQuery<CardDto>(CollectionLink)
+                .Where(card => card.type == nameof(CardDto))
+                .ToListAsync();
         }
     }
 }

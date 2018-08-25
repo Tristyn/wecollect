@@ -9,9 +9,24 @@
     <button>Redeploy</button>
 </form>
 
-@model CardDto
-<form asp-controller="Admin" asp-action="CreateCard" method="post" class="form-horizontal">
-    @Html.LabelFor(_ => _.name) <input asp-for="name" />
-    @Html.LabelFor(_ => _.set) <input asp-for="set" />
-    <button>Create Card</button>
+
+<hr />
+<h2>Mint Cards</h2>
+@model CardMintingDto
+<form asp-controller="Admin" asp-action="MintCard" method="post" enctype="multipart/form-data" class="form-horizontal">
+    <div>Name: <input asp-for="Name" /></div>
+    <div>
+        Image:
+        <input asp-for="ImageFormUploadUri" type="file" />
+    </div>
+    <div>Ether Price: <input asp-for="PriceWeiDecimal" value="0.1" /></div>
+    <div>
+        Parent Collectible:
+        @Html.DropDownListFor(
+            card => card.ParentCardsContractId,
+            (IEnumerable<SelectListItem>)ViewData["AllCards"])
+    </div>
+    <div>Mining Level: <input asp-for="MiningLevel" value="1" /></div>
+    <div>Mint Date: <input asp-for="LastMiningCollectedDate" value="@(DateTimeOffset.UtcNow.ToUnixTimeSeconds())" /></div>
+    <div><button>Mint Card</button></div>
 </form>

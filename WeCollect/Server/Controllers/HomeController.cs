@@ -25,38 +25,33 @@ namespace WeCollect.Server.Controllers
         public const string UniverseRoute = "Universe";
 
         [Route("~/", Name = UniverseRoute)]
-        public Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            return Card("universe");
+            await Startup.StartupComplete;
+            return await Card("universe");
         }
 
         [Route("collection/{name}")]
         public async Task<IActionResult> Set([FromRoute]string name)
         {
-            IEnumerable<CardDto> cards = await _container.Documents.GetCardSet(name);
-
-
-
-            return View();
+            var set = new SetViewModel
+            {
+                Cards = await _container.Documents.GetCardSet(name)
+            };
+            return View("Set", set);
         }
 
         [Route("collectible/{name}", Name = CardRoute)]
         public async Task<IActionResult> Card([FromRoute]string name)
         {
-            CardDto card = await _container.Documents.GetCardWithUriName(name);
-            return View(card);
+            var card = await _container.Documents.GetCardWithUriName(name);
+            return View("Card", card);
         }
         [Route("error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [Route("collectible/{id}")]
-        public IActionResult Card([FromRoute]int id)
-        {
-            return View();
         }
     }
 }

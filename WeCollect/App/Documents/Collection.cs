@@ -36,7 +36,7 @@ namespace WeCollect.App.Documents
         {
             await documentDb.EnsureDbExists();
 
-            var resp = await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, document.Id), document);
+            var resp = await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, document.id), document);
         }
 
         /// <exception cref="DocumentClientException"/>
@@ -52,7 +52,7 @@ namespace WeCollect.App.Documents
             await documentDb.EnsureDbExists();
 
             var docs = await _client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
-                    .Where(contract => contract.Id == id)
+                    .Where(contract => contract.id == id)
                     .ToListAsync();
 
             return docs.Any();

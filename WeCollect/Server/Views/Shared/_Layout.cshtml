@@ -17,6 +17,8 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:300,700">
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -49,10 +51,10 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
+        @*<hr />
         <footer>
             <p>&copy; 2018 - WeCollect</p>
-        </footer>
+        </footer>*@
     </div>
 
     <environment include="Development">

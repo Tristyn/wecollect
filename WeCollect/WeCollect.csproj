@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>7.1</LangVersion>
     <UserSecretsId>6404a65e-0826-4ccd-950d-c86c81342522</UserSecretsId>
   </PropertyGroup>
 
@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <PackageReference Include="Common.Logging" Version="3.4.1" />
+    <PackageReference Include="Magick.NET-Q8-x64" Version="7.6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.2" />
     <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.0.0-preview2" />
@@ -53,6 +54,7 @@
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
     <PackageReference Include="Nito.AsyncEx.Oop" Version="1.0.1" />
     <PackageReference Include="Nito.AsyncEx.Tasks" Version="1.1.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,10 +8,10 @@ namespace WeCollect.App.Models
 {
     public class CardSpecDto
     {
-        [JsonProperty(PropertyName = "id")]
-        public int Id { get; set; }
+        public int cardContractId { get; set; }
 
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        public string name { get; set; }
+        
+        public string uriName { get; set; }
     }
 }

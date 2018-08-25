@@ -2,11 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <Platforms>AnyCPU;x64</Platforms>
         
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include = "Nethereum.Web3" Version="3.0.0-rc1" />
+        <PackageReference Include="Nethereum.Web3" Version="3.0.0-rc1" />
     </ItemGroup>
     
 </Project>

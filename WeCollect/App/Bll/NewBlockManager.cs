@@ -67,6 +67,7 @@ namespace WeCollect.App.Bll
                     if (Debugger.IsAttached)
                     {
                         Debugger.Break();
+                        continue;
                     }
                     else
                     {

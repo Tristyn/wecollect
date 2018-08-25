@@ -5,14 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.WindowsAzure.Storage;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
+using Nito.AsyncEx;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App;
 using WeCollect.App.Bll;
+using WeCollect.App.Blob;
 using WeCollect.App.Documents;
 using WeCollect.App.Web3;
 using WeCollect.Server.Models;
@@ -23,8 +26,15 @@ namespace WeCollect
     {
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            _startupWaitHandle = new AsyncManualResetEvent();
+            StartupComplete = Task.Run(async () => { await _startupWaitHandle.WaitAsync(); });
+
             Configuration = configuration;
         }
+
+        private static AsyncManualResetEvent _startupWaitHandle;
+
+        public static Task StartupComplete { get; private set; }
 
         public static IConfiguration Configuration { get; private set; }
 
@@ -63,6 +73,13 @@ namespace WeCollect
             Container = new Container();
             services.AddSingleton(Container);
             var config = Container.Config = Configuration.Get<ServerConfiguration>();
+            
+            var blobService = Container.BlobService = await BlobService.Create(
+                new Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer(
+                    config.StorageAccountBlobsUri,
+                    new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+                        config.StorageAccountName,
+                        config.StorageAccountKey)));
 
             var web3 = Container.Web3 = new Nethereum.Web3.Web3(Configuration["web3Url"]);
 
@@ -86,7 +103,7 @@ namespace WeCollect
             contracts.DocumentsByName = contractDocuments
                 .Where(contract => contract.name != null)
                 .ToDictionary(contract => contract.name);
-            
+
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 
             Web3Db web3Db = Container.Web3Db = new Web3Db(
@@ -97,7 +114,7 @@ namespace WeCollect
                 config.Web3ServerPrivateKey);
 
             //Seed
-            var cardFactory = new CardFactory(web3Db, web3, documents, Container.Config);
+            var cardFactory = Container.CardFactory = new CardFactory(web3Db, web3, documents, Container.Config, Container.BlobService);
             services.AddSingleton(cardFactory);
             await Seed.DoSeed(cardFactory);
 
@@ -120,11 +137,7 @@ namespace WeCollect
             var _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock, ex => { Debugger.Break(); return Task.CompletedTask; }));
 
 
-
-
-
-
-
+            _startupWaitHandle.Set();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

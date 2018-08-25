@@ -28,7 +28,7 @@ namespace WeCollect.App.Documents
             try
             {
                 await _documentDb.BlockCheckpoints.Replace(checkpoint);
-                var gottenCheckpoint = await _documentDb.BlockCheckpoints.Get(checkpoint.Id);
+                var gottenCheckpoint = await _documentDb.BlockCheckpoints.Get(checkpoint.id);
 
                 BlockCheckpoint = gottenCheckpoint;
             }
@@ -37,7 +37,7 @@ namespace WeCollect.App.Documents
                 if (!ex.IsPreconditionFailed())
                     throw;
                 
-                var gottenCheckpoint = await _documentDb.BlockCheckpoints.Get(checkpoint.Id);
+                var gottenCheckpoint = await _documentDb.BlockCheckpoints.Get(checkpoint.id);
                 if (gottenCheckpoint.BlockPosition < checkpoint.BlockPosition)
                 {
                     throw;

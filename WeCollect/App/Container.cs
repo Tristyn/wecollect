@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Contracts.Contracts.Cards;
 using WeCollect.App.Bll;
+using WeCollect.App.Blob;
 using WeCollect.App.Documents;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;
@@ -26,5 +27,8 @@ namespace WeCollect.App
         public CardsService CardsContractMethods { get; set; }
 
         public ContractEventsController CardEventsController { get; set; }
+
+        public CardFactory CardFactory { get; set; }
+        public BlobService BlobService { get; internal set; }
     }
 }

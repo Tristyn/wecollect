@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
+using Nethereum.Util;
+using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App;
+using WeCollect.App.Extensions;
 using WeCollect.App.Models;
 using WeCollect.Server.Hubs;
 using WeCollect.Server.Models;
@@ -18,8 +22,11 @@ namespace WeCollect.Server.Controllers
             GlobalHubContext.CardHub = cardHub;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewData["AllCards"] = (await Container.Documents.GetAllCards())
+                .Select(card => new SelectListItem { Text = card.name, Value = card.cardsContractId.ToString() });
+
             return View();
         }
 
@@ -32,11 +39,14 @@ namespace WeCollect.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCard([FromForm] CardDto card)
+        public async Task<IActionResult> MintCard([FromForm] CardMintingDto mintingCard)
         {
-            await Container.Documents.Cards.Create(card);
+            // The form accepts price in eth, convert to wei
+            mintingCard.PriceWei = UnitConversion.Convert.ToWei(mintingCard.PriceWeiDecimal, UnitConversion.EthUnit.Ether);
+            await Container.CardFactory.MintCard(mintingCard, new App.Bll.CardFactory.CardOptions { });
 
-            return Redirect(Url.Action("Card", "Home", new { name = card.name }));
+            var card = await Container.Documents.GetCardWithName(mintingCard.Name);
+            return Redirect(Url.Action("Card", "Home", new { name = card.uriName }));
         }
     }
 }

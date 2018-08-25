@@ -42,7 +42,7 @@ namespace WeCollect.App.Web3
             try
             {
 
-                var engine = await BlockCheckpointEngine.GetAsync(_documentDb, _checkpointDto.Id);
+                var engine = await BlockCheckpointEngine.GetAsync(_documentDb, _checkpointDto.id);
                 await engine.IncrementBlockId();
                 _checkpointDto = engine.BlockCheckpoint;
 
@@ -54,7 +54,7 @@ namespace WeCollect.App.Web3
             {
                 if (ex.IsPreconditionFailed())
                 {
-                    _latestDocumentCheckpointDto = await _documentDb.BlockCheckpoints.Get(_checkpointDto.Id);
+                    _latestDocumentCheckpointDto = await _documentDb.BlockCheckpoints.Get(_checkpointDto.id);
                 }
                 else
                 {
@@ -133,7 +133,7 @@ namespace WeCollect.App.Web3
 
             await _documents.BlockCheckpoints.Create(checkpoint);
 
-            return await _documents.BlockCheckpoints.Get(checkpoint.Id);
+            return await _documents.BlockCheckpoints.Get(checkpoint.id);
 
 
         }

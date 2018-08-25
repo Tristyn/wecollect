@@ -1,6 +1,44 @@
 ﻿@model CardDto
 
+@using WeCollect.Server.Controllers
 
-@Html.PartialAsync("_CardSmPartial", Model, ViewData)
-<partial name="_CardSmPartial" />
-Card
+@{
+    foreach (var parent in Model.parents.Append(Model.ToCardSpec()))
+    {
+        var isLast = parent.cardContractId == Model.cardsContractId;
+        <a href="@Url.RouteUrl(HomeController.CardRoute, new { name = parent.uriName })">@parent.name</a>
+        if (!isLast)
+        {
+            @:&nbsp;>&nbsp;
+        }
+    }
+
+
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <p>
+
+            <br />
+            <br />
+            <br />
+
+            <br />
+            <strong>Current price: </strong>@UnitConversion.Convert.FromWei(Model.priceWei, UnitConversion.EthUnit.Ether) ETH
+            <br />
+            <strong>Next Price: </strong>@UnitConversion.Convert.FromWei(Model.nextPriceWei, UnitConversion.EthUnit.Ether) ETH
+            <br />
+            <strong>Owner: </strong>
+            @if (!string.IsNullOrEmpty(Model.ownerName))
+            {
+                // link to a profile
+                @Model.ownerName
+            }
+            else
+            {
+                @:Unowned
+            }
+        </p>
+    </div>
+</div>

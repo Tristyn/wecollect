@@ -2,9 +2,11 @@
 using Contracts.Contracts.Cards.ContractDefinition;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using WeCollect.App.Models;
@@ -62,7 +64,7 @@ namespace WeCollect.Server.Models
         // Contract Events 
         //
 
-        public BigInteger nextPriceEth { get; set; }
+        public BigInteger nextPriceWei { get; set; }
 
         public BigInteger miningRatePerBlockWcc { get; set; }
 
@@ -107,13 +109,22 @@ namespace WeCollect.Server.Models
 
         public string mintTransactionHash { get; set; }
 
+        public string imageBlobName { get; set; }
+
         public CardSpecDto ToCardSpec()
         {
             return new CardSpecDto
             {
-                Id = cardsContractId,
-                Name = name
+                cardContractId = cardsContractId,
+                name = name,
+                uriName = uriName
             };
+        }
+
+        public CardSpecDto[] ToCardSpecsForChildCard()
+        {
+            Debug.Assert(parents.Length < 7);
+            return parents.Append(ToCardSpec()).ToArray();
         }
 
         public static string GetId(string name)

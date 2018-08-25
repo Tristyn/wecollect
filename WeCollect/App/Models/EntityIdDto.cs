@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 
 namespace WeCollect.App.Models
 {
-    public class EntityIdDto : Document
+    public class IdCounterDto : Document
     {
         public int currentId { get; set; }
 
         public override string name { get; set; }
 
-        public override string type => nameof(EntityIdDto);
+        public override string type => nameof(IdCounterDto);
 
         public static string GetId(string name)
         {
-            return nameof(EntityIdDto) + name;
+            return nameof(IdCounterDto) + name;
         }
     }
 }

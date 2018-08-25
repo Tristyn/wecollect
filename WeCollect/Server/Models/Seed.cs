@@ -18,8 +18,9 @@ namespace WeCollect.Server.Models
             {
                 MiningLevel = 1,
                 PriceWei = Wei.FromEth(0.2m),
-                LastMiningCollectedDate = DateTimeOffset.UtcNow,
+                LastMiningCollectedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Name = "Universe",
+                ImageUploadUri = new Uri(@"https://upload.wikimedia.org/wikipedia/commons/d/d6/Hs-2009-25-e-full_jpg.jpg")
             },
             new CardFactory.CardOptions
             {
