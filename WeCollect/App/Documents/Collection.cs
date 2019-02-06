@@ -15,9 +15,9 @@ namespace WeCollect.App.Documents
         private static readonly Uri CollectionLink = UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId);
 
         private readonly DocumentClient _client;
-        private readonly CardDocumentDb documentDb;
+        private readonly CardDb documentDb;
 
-        public Collection(DocumentClient client, CardDocumentDb documentDb)
+        public Collection(DocumentClient client, CardDb documentDb)
         {
             _client = client;
             this.documentDb = documentDb;

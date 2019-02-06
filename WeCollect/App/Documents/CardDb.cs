@@ -14,8 +14,9 @@ using WeCollect.Server.Models;
 
 namespace WeCollect.App.Documents
 {
-    public class CardDocumentDb
+    public class CardDb
     {
+        public static CardDb Db;
         private static readonly string DatabaseId = "Main";
         private static readonly Uri DatabaseLink = UriFactory.CreateDatabaseUri(DatabaseId);
         private static readonly string CollectionId = "Main";
@@ -34,7 +35,7 @@ namespace WeCollect.App.Documents
 
         private volatile bool _dbExists;
 
-        public CardDocumentDb(DocumentClient client, Container container)
+        public CardDb(DocumentClient client, Container container)
         {
             _client = client;
 

@@ -10,11 +10,11 @@ namespace WeCollect.App.Documents
 {
     public class BlockCheckpointEngine
     {
-        private readonly CardDocumentDb _documentDb;
+        private readonly CardDb _documentDb;
 
         public BlockCheckpointDto BlockCheckpoint { get; private set; }
 
-        public BlockCheckpointEngine(CardDocumentDb cardDocumentDb, BlockCheckpointDto checkpoint)
+        public BlockCheckpointEngine(CardDb cardDocumentDb, BlockCheckpointDto checkpoint)
         {
             _documentDb = cardDocumentDb;
             BlockCheckpoint = checkpoint;
@@ -47,7 +47,7 @@ namespace WeCollect.App.Documents
             }
         }
 
-        public static async Task<BlockCheckpointEngine> GetAsync(CardDocumentDb documentDb, string id)
+        public static async Task<BlockCheckpointEngine> GetAsync(CardDb documentDb, string id)
         {
             var checkpoint = await documentDb.BlockCheckpoints.Get(id);
             return new BlockCheckpointEngine(documentDb, checkpoint);

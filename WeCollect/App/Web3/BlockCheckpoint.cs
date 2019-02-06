@@ -15,7 +15,7 @@ namespace WeCollect.App.Web3
 {
     public class BlockCheckpoint : IBlockCheckpoint
     {
-        private readonly CardDocumentDb _documentDb;
+        private readonly CardDb _documentDb;
         private BlockCheckpointDto _checkpointDto;
         private BlockCheckpointDto _latestDocumentCheckpointDto;
 
@@ -24,7 +24,7 @@ namespace WeCollect.App.Web3
         public BlockParameter Checkpoint => new BlockParameter(new HexBigInteger(_checkpointDto.BlockPosition));
         public Nethereum.Web3.Web3 _web3;
         
-        public BlockCheckpoint(Nethereum.Web3.Web3 web3, CardDocumentDb documents, IBlockEnumerator blockEnumerator, BlockCheckpointDto checkpointDto)
+        public BlockCheckpoint(Nethereum.Web3.Web3 web3, CardDb documents, IBlockEnumerator blockEnumerator, BlockCheckpointDto checkpointDto)
         {
             _web3 = web3;
             _documentDb = documents;
@@ -81,9 +81,9 @@ namespace WeCollect.App.Web3
     public class BlockCheckpointFactory
     {
         private readonly Nethereum.Web3.Web3 _web3;
-        private readonly CardDocumentDb _documents;
+        private readonly CardDb _documents;
 
-        public BlockCheckpointFactory(Nethereum.Web3.Web3 web3, CardDocumentDb documents)
+        public BlockCheckpointFactory(Nethereum.Web3.Web3 web3, CardDb documents)
         {
             _web3 = web3;
             _documents = documents;

@@ -16,7 +16,7 @@ namespace WeCollect.App
 
         public Web3Db Web3Db { get; set; }
         
-        public CardDocumentDb Documents { get; set; }
+        public CardDb Documents { get; set; }
 
         public ContractArtifacts ContractArtifacts { get; set; }
 

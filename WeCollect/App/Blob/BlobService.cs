@@ -10,6 +10,8 @@ namespace WeCollect.App.Blob
 {
     public class BlobService
     {
+        public static BlobService Blob;
+
         private readonly CloudBlobContainer _container;
 
         public const string CardImage = "cardimage";

@@ -13,6 +13,8 @@ namespace WeCollect.App.Web3
 {
     public class ContractArtifacts
     {
+        public static ContractArtifacts artifacts;
+
         public ContractArtifact Test { get; }
 
         public ContractArtifact Cards { get; }

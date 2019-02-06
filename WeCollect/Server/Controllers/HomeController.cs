@@ -27,7 +27,6 @@ namespace WeCollect.Server.Controllers
         [Route("~/", Name = UniverseRoute)]
         public async Task<IActionResult> Index()
         {
-            await Startup.StartupComplete;
             return await Card("universe");
         }
 

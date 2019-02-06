@@ -22,23 +22,21 @@ namespace WeCollect.App.Bll
 {
     public class CardFactory
     {
-        private readonly Web3Db _web3Db;
-        private readonly Nethereum.Web3.Web3 _web3;
-        private readonly CardDocumentDb _documentDb;
+        private readonly Web3Db _web3Db = Web3Db.web3Db;
+        private readonly Nethereum.Web3.Web3 _web3 = Web3Db.web3;
+        private readonly CardDb _documentDb;
         private readonly BlobService _blobService;
         private readonly string _serverAddress;
         private readonly string _serverPrivateKey;
         private readonly CardsService _cardMethods;
 
-        public CardFactory(Web3Db web3Db, Nethereum.Web3.Web3 web3, CardDocumentDb documentDb, ServerConfiguration config, BlobService blobService)
+        public CardFactory(CardDb documentDb, ServerConfiguration config, BlobService blobService)
         {
-            _web3Db = web3Db;
-            _web3 = web3;
             _documentDb = documentDb;
             _blobService = blobService;
             _serverAddress = config.Web3ServerAddress;
             _serverPrivateKey = config.Web3ServerPrivateKey;
-            _cardMethods = web3Db.Cards;
+            _cardMethods = _web3Db.Cards;
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace WeCollect.App.Bll
     public class ContractEventsController
     {
         private readonly Container _container;
-        private readonly CardDocumentDb _documents;
+        private readonly CardDb _documents;
 
         public ContractEventsController(Container container)
         {

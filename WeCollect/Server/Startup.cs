@@ -18,6 +18,7 @@ using WeCollect.App.Bll;
 using WeCollect.App.Blob;
 using WeCollect.App.Documents;
 using WeCollect.App.Web3;
+using WeCollect.Server.Middleware;
 using WeCollect.Server.Models;
 
 namespace WeCollect
@@ -67,14 +68,12 @@ namespace WeCollect
 
 
 
-
-
             // build the container
             Container = new Container();
             services.AddSingleton(Container);
             var config = Container.Config = Configuration.Get<ServerConfiguration>();
             
-            var blobService = Container.BlobService = await BlobService.Create(
+            var blobService = BlobService.Blob = Container.BlobService = await BlobService.Create(
                 new Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer(
                     config.StorageAccountBlobsUri,
                     new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
@@ -83,10 +82,10 @@ namespace WeCollect
 
             var web3 = Container.Web3 = new Nethereum.Web3.Web3(Configuration["web3Url"]);
 
-            var contracts = Container.ContractArtifacts = ContractArtifacts.Initialize().Result;
+            var contracts = ContractArtifacts.artifacts = Container.ContractArtifacts = ContractArtifacts.Initialize().Result;
 
 
-            CardDocumentDb documents = Container.Documents = new CardDocumentDb(
+            CardDb documents = CardDb.Db = Container.Documents = new CardDb(
                 new Microsoft.Azure.Documents.Client.DocumentClient(
                     Configuration.GetValue<Uri>("documentDbEndpoint"),
                     Configuration["documentDbKey"],
@@ -106,15 +105,15 @@ namespace WeCollect
 
             var cardsService = Container.CardsContractMethods = new Contracts.Contracts.Cards.CardsService(web3, contracts.DocumentsByName[nameof(contracts.Cards)].Address);
 
-            Web3Db web3Db = Container.Web3Db = new Web3Db(
+            Web3Db web3Db = Web3Db.web3Db = Container.Web3Db = new Web3Db(
                 web3,
                 contracts,
                 cardsService,
                 config.Web3ServerAddress,
                 config.Web3ServerPrivateKey);
-
+            
             //Seed
-            var cardFactory = Container.CardFactory = new CardFactory(web3Db, web3, documents, Container.Config, Container.BlobService);
+            var cardFactory = Container.CardFactory = new CardFactory(documents, Container.Config, Container.BlobService);
             services.AddSingleton(cardFactory);
             await Seed.DoSeed(cardFactory);
 
@@ -156,6 +155,7 @@ namespace WeCollect
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseJsDataInjector();
 
             app.UseMvc(routes =>
             {

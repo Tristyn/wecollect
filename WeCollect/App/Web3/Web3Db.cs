@@ -12,6 +12,9 @@ namespace WeCollect.App.Web3
 {
     public class Web3Db
     {
+        public static Web3Db web3Db;
+        public static Nethereum.Web3.Web3 web3;
+
         private Nethereum.Web3.Web3 _web3 { get; }
         public ContractArtifacts Contracts { get; }
         public CardsService Cards { get; }
@@ -44,5 +47,6 @@ namespace WeCollect.App.Web3
             BoughtMiningLevelEvent = cards.GetEvent<OnBoughtMiningLevelEventDTO>("OnBoughtMiningLevel");
             CardMiningCollectedEvent = cards.GetEvent<OnCardMiningCollectedEventDTO>("OnCardMiningCollected");
         }
+
     }
 }
