@@ -5,10 +5,8 @@ using Nethereum.Util;
 using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App;
-using WeCollect.App.Extensions;
 using WeCollect.App.Models;
 using WeCollect.Server.Hubs;
-using WeCollect.Server.Models;
 
 namespace WeCollect.Server.Controllers
 {
@@ -35,7 +33,7 @@ namespace WeCollect.Server.Controllers
         {
             await Container.ContractsInitializer.Redeploy();
 
-            return View(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]

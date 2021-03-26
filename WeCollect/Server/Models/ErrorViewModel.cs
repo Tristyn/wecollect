@@ -1,5 +1,3 @@
-using System;
-
 namespace WeCollect.Server.Models
 {
     public class ErrorViewModel

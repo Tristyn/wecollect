@@ -2,8 +2,6 @@
 using Nethereum.Hex.HexTypes;
 using Nethereum.RPC.Eth.DTOs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -11,7 +9,7 @@ namespace WeCollect.App.Web3
 {
     public class BlockEnumerator : IBlockEnumerator
     {
-        private static readonly ILogger _loopLogger = Logger.GetLogger($"{nameof(BlockEnumerator)}.{nameof(NextBlockAsync)}.Loop");
+        private static readonly ILogger _loopLogger = Log.GetLogger($"{nameof(BlockEnumerator)}.{nameof(NextBlockAsync)}.Loop");
         private readonly Nethereum.Web3.Web3 _web3;
         private BigInteger _last;
 

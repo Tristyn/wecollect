@@ -10,12 +10,12 @@ namespace System.Linq
 {
     public static class DocumentClientExtensions
     {
-        private static readonly ILogger _log = Logger.GetLogger(nameof(DocumentClientExtensions));
+        private static readonly ILogger _log = Log.GetLogger(nameof(DocumentClientExtensions));
 
         public static async Task<T> SingleOrLog<T>(this IQueryable<T> source)
         {
             IDocumentQuery<T> result = source.AsDocumentQuery();
-            
+
             T first = default;
 
             while (result.HasMoreResults)
@@ -23,7 +23,7 @@ namespace System.Linq
                 FeedResponse<T> batch = await result.ExecuteNextAsync<T>();
                 foreach (T item in batch)
                 {
-                    if (first == default)
+                    if (EqualityComparer<T>.Default.Equals(first, default(T)))
                     {
                         first = item;
                         continue;
@@ -36,9 +36,9 @@ namespace System.Linq
                 break;
             }
 
-            if (first == default)
+            if (EqualityComparer<T>.Default.Equals(first, default(T)))
             {
-                throw new InvalidOperationException();
+                _log.LogWarning("Single or default yielded no results.");
             }
 
             return first;
@@ -55,7 +55,7 @@ namespace System.Linq
                 FeedResponse<T> batch = await result.ExecuteNextAsync<T>();
                 foreach (T item in batch)
                 {
-                    if (first == default)
+                    if (EqualityComparer<T>.Default.Equals(first, default(T)))
                     {
                         first = item;
                         continue;
@@ -68,7 +68,7 @@ namespace System.Linq
                 break;
             } while (result.HasMoreResults);
 
-            if (first == default)
+            if (EqualityComparer<T>.Default.Equals(first, default(T)))
             {
                 throw new InvalidOperationException();
             }
@@ -87,7 +87,7 @@ namespace System.Linq
                 FeedResponse<T> batch = await result.ExecuteNextAsync<T>();
                 foreach (T item in batch)
                 {
-                    if (first == default)
+                    if (EqualityComparer<T>.Default.Equals(first, default(T)))
                     {
                         first = item;
                         continue;
@@ -100,7 +100,7 @@ namespace System.Linq
                 break;
             }
 
-            return first != default;
+            return !EqualityComparer<T>.Default.Equals(first, default(T)) ;
         }
 
         public static async Task<bool> Exists<T>(this IQueryable<T> source, Expression<Func<T, bool>> predicate)
@@ -114,7 +114,7 @@ namespace System.Linq
                 FeedResponse<T> batch = await result.ExecuteNextAsync<T>();
                 foreach (T item in batch)
                 {
-                    if (first == default)
+                    if (EqualityComparer<T>.Default.Equals(first, default(T)))
                     {
                         first = item;
                         continue;
@@ -127,7 +127,7 @@ namespace System.Linq
                 return true;
             }
 
-            return first != default;
+            return !EqualityComparer<T>.Default.Equals(first, default(T));
         }
 
         public static async Task<IEnumerable<T>> ToListAsync<T>(this IQueryable<T> query)

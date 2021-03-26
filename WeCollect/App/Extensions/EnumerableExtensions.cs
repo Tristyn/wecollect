@@ -7,14 +7,14 @@ namespace System.Linq
     public static class EnumerableExtensions
     {
 
-        private static readonly ILogger _log = Logger.GetLogger(nameof(EnumerableExtensions));
+        private static readonly ILogger _log = Log.GetLogger(nameof(EnumerableExtensions));
 
         public static T SingleOrLog<T>(this IEnumerable<T> source)
         {
             T first = default;
             foreach(var item in source)
             {
-                if (first == default)
+                if (EqualityComparer<T>.Default.Equals(first, default(T)))
                 {
                     first = item;
                     continue;
@@ -35,7 +35,7 @@ namespace System.Linq
                 if (!predicate(item))
                     continue;
 
-                if (first == default)
+                if (EqualityComparer<T>.Default.Equals(first, default(T)))
                 {
                     first = item;
                     continue;

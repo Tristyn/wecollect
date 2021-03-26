@@ -2,6 +2,8 @@
 
 @using WeCollect.Server.Controllers
 
+<br />
+
 @{
     foreach (var parent in Model.parents.Append(Model.ToCardSpec()))
     {
@@ -18,12 +20,17 @@
 
 <div class="row">
     <div class="col-md-3">
+
+        <br />
+
+        @* card-img class has a standard min-height so it's not collapsed while it's loading *@
+        <img src="@WeCollect.App.Blob.BlobService.Blob.GetUrl(Model.imageBlobName)" class="card-img" />
+
+
+
+
         <p>
-
             <br />
-            <br />
-            <br />
-
             <br />
             <strong>Current price: </strong>@UnitConversion.Convert.FromWei(Model.priceWei, UnitConversion.EthUnit.Ether) ETH
             <br />

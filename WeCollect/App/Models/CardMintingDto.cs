@@ -1,13 +1,9 @@
-﻿using Contracts.Contracts;
-using Contracts.Contracts.Cards.ContractDefinition;
+﻿using Contracts.Contracts.Cards.ContractDefinition;
 using Microsoft.AspNetCore.Http;
 using Nethereum.Hex.HexTypes;
-using Nethereum.Util;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using WeCollect.Server.Models;

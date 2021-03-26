@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using WeCollect.App.Extensions;
 using WeCollect.App.Models;
 
 namespace WeCollect.App.Web3
@@ -57,7 +55,7 @@ namespace WeCollect.App.Web3
     {
         private readonly string _path;
 
-        ILogger _log = Logger.GetLogger<ContractArtifact>();
+        ILogger _log = Log.GetLogger<ContractArtifact>();
 
         public ContractArtifact(string sourcePath)
             : this(sourcePath, Path.GetFileNameWithoutExtension(sourcePath))

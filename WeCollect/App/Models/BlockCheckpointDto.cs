@@ -1,10 +1,4 @@
-﻿using Nethereum.Hex.HexTypes;
-using Nethereum.RPC.Eth.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace WeCollect.App.Models
 {

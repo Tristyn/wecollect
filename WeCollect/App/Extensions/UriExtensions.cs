@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace WeCollect.App.Extensions
+namespace System
 {
     public static class UriExtensions
     {
@@ -13,6 +10,11 @@ namespace WeCollect.App.Extensions
         {
             var location = new Uri(Assembly.GetEntryAssembly().GetName().CodeBase);
             return new FileInfo(location.AbsolutePath).DirectoryName;
+        }
+
+        public static Uri Append(this Uri uri, params string[] paths)
+        {
+            return new Uri(paths.Aggregate(uri.AbsoluteUri, (current, path) => string.Format("{0}/{1}", current.TrimEnd('/'), path.TrimStart('/'))));
         }
     }
 }

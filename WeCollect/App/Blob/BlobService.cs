@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +34,7 @@ namespace WeCollect.App.Blob
 
         public Uri GetUrl(string name)
         {
-            return new Uri(_container.Uri, name);
+            return _container.StorageUri.PrimaryUri.Append(name);
         }
 
         private static async Task ConfigureContainer(CloudBlobContainer container)

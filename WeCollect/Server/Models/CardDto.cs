@@ -1,9 +1,4 @@
-﻿using Contracts.Contracts;
-using Contracts.Contracts.Cards.ContractDefinition;
-using Nethereum.Hex.HexTypes;
-using Nethereum.RPC.Eth.DTOs;
-using Nethereum.Util;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Diagnostics;

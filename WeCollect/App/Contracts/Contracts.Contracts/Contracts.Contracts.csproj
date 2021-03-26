@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <Platforms>AnyCPU;x64</Platforms>
-        
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Nethereum.Web3" Version="3.0.0-rc1" />
-    </ItemGroup>
-    
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <LangVersion>latest</LangVersion>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>Z:\repos\wecollect\Backup\WeCollect\App\Contracts\Contracts.Contracts\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nethereum.Web3" Version="3.0.0-rc1" />
+  </ItemGroup>
 </Project>

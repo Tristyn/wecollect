@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace WeCollect.App.Extensions
+namespace System.Threading.Tasks
 {
     public static class AsyncHelpers
     {
@@ -75,8 +72,8 @@ namespace WeCollect.App.Extensions
             private bool done;
             public Exception InnerException { get; set; }
             readonly AutoResetEvent workItemsWaiting = new AutoResetEvent(false);
-            readonly Queue<Tuple<SendOrPostCallback, object>> items =
-                new Queue<Tuple<SendOrPostCallback, object>>();
+            readonly Queue<ValueTuple<SendOrPostCallback, object>> items =
+                new Queue<ValueTuple<SendOrPostCallback, object>>();
 
             public override void Send(SendOrPostCallback d, object state)
             {
@@ -87,7 +84,7 @@ namespace WeCollect.App.Extensions
             {
                 lock (items)
                 {
-                    items.Enqueue(Tuple.Create(d, state));
+                    items.Enqueue(ValueTuple.Create(d, state));
                 }
                 workItemsWaiting.Set();
             }
@@ -101,7 +98,7 @@ namespace WeCollect.App.Extensions
             {
                 while (!done)
                 {
-                    Tuple<SendOrPostCallback, object> task = null;
+                    ValueTuple<SendOrPostCallback, object> task = default;
                     lock (items)
                     {
                         if (items.Count > 0)
@@ -109,7 +106,7 @@ namespace WeCollect.App.Extensions
                             task = items.Dequeue();
                         }
                     }
-                    if (task != null)
+                    if (task != default)
                     {
                         task.Item1(task.Item2);
                         if (InnerException != null) // the method threw an exeption

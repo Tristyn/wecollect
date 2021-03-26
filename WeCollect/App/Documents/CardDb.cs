@@ -1,12 +1,8 @@
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq;
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;

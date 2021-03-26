@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Contracts.Contracts.Cards;
+﻿using Contracts.Contracts.Cards;
 using Contracts.Contracts.Cards.ContractDefinition;
-using Contracts.Contracts.Test;
 using Nethereum.Contracts;
-using Nethereum.Web3;
 
 namespace WeCollect.App.Web3
 {

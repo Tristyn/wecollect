@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <UserSecretsId>6404a65e-0826-4ccd-950d-c86c81342522</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;1998</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,11 +1,5 @@
-﻿using Contracts.Contracts.Cards.ContractDefinition;
-using Nethereum.Contracts;
-using Nethereum.Hex.HexTypes;
-using Nethereum.RPC.Eth.DTOs;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,10 +10,10 @@ namespace WeCollect.App.Bll
     public class NewBlockManager
     {
 
-        private readonly ContractEventsController _cardsController;
+        private readonly ContractEventsHandler _cardsController;
         private readonly Web3Db _web3;
 
-        public NewBlockManager(Container container, ContractEventsController cardEventsController)
+        public NewBlockManager(Container container, ContractEventsHandler cardEventsController)
         {
             _web3 = container.Web3Db;
             _cardsController = cardEventsController;
@@ -71,7 +65,7 @@ namespace WeCollect.App.Bll
                     }
                     else
                     {
-                        Thread.Sleep(5*1024);
+                        Thread.Sleep(5000);
                     }
                 }
             }

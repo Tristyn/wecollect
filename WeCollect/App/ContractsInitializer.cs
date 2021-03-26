@@ -1,7 +1,4 @@
-﻿using Nethereum.Contracts;
-using Nethereum.RPC.Eth.DTOs;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WeCollect.App.Documents;
 using WeCollect.App.Models;
 using WeCollect.App.Web3;

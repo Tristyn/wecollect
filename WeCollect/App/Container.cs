@@ -26,7 +26,7 @@ namespace WeCollect.App
 
         public CardsService CardsContractMethods { get; set; }
 
-        public ContractEventsController CardEventsController { get; set; }
+        public ContractEventsHandler CardEventsController { get; set; }
 
         public CardFactory CardFactory { get; set; }
         public BlobService BlobService { get; internal set; }

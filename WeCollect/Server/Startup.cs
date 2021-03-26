@@ -5,12 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAzure.Storage;
-using Nethereum.Hex.HexTypes;
-using Nethereum.RPC.Eth.DTOs;
 using Nito.AsyncEx;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App;
@@ -28,14 +24,14 @@ namespace WeCollect
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             _startupWaitHandle = new AsyncManualResetEvent();
-            StartupComplete = Task.Run(async () => { await _startupWaitHandle.WaitAsync(); });
+            StartupComplete = new ValueTask(Task.Run(async () => { await _startupWaitHandle.WaitAsync(); }));
 
             Configuration = configuration;
         }
 
         private static AsyncManualResetEvent _startupWaitHandle;
 
-        public static Task StartupComplete { get; private set; }
+        public static ValueTask StartupComplete { get; private set; }
 
         public static IConfiguration Configuration { get; private set; }
 
@@ -72,7 +68,7 @@ namespace WeCollect
             Container = new Container();
             services.AddSingleton(Container);
             var config = Container.Config = Configuration.Get<ServerConfiguration>();
-            
+
             var blobService = BlobService.Blob = Container.BlobService = await BlobService.Create(
                 new Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer(
                     config.StorageAccountBlobsUri,
@@ -80,7 +76,7 @@ namespace WeCollect
                         config.StorageAccountName,
                         config.StorageAccountKey)));
 
-            var web3 = Container.Web3 = new Nethereum.Web3.Web3(Configuration["web3Url"]);
+            var web3 = Web3Db.web3 = Container.Web3 = new Nethereum.Web3.Web3(Configuration["web3Url"]);
 
             var contracts = ContractArtifacts.artifacts = Container.ContractArtifacts = ContractArtifacts.Initialize().Result;
 
@@ -109,16 +105,15 @@ namespace WeCollect
                 web3,
                 contracts,
                 cardsService,
-                config.Web3ServerAddress,
-                config.Web3ServerPrivateKey);
-            
+                config.Web3HotAddress,
+                config.Web3HotPrivateKey);
+
             //Seed
             var cardFactory = Container.CardFactory = new CardFactory(documents, Container.Config, Container.BlobService);
             services.AddSingleton(cardFactory);
-            await Seed.DoSeed(cardFactory);
+            var _ = Task.Run(async () => await Seed.DoSeed(cardFactory));
 
-
-            var cardEventsController = Container.CardEventsController = new ContractEventsController(Container);
+            var cardEventsController = Container.CardEventsController = new ContractEventsHandler(Container);
 
             var newBlockManager = new NewBlockManager(Container, cardEventsController);
 
@@ -129,11 +124,10 @@ namespace WeCollect
             var cardContractCreatedBlock = Container.ContractArtifacts.DocumentsByName[Container.ContractArtifacts.Cards.Name].TransactionReceipt.BlockNumber.Value;
             var checkpoint = await checkpointFactory.GetOrCreateCheckpoint("blockManagerCheckpoint", cardContractCreatedBlock);
 
-
+            
             // Begin BlockLoop
             var blockLoop = new NewBlockLoop(web3, checkpoint);
-            blockLoop.Start();
-            var _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock, ex => { Debugger.Break(); return Task.CompletedTask; }));
+            _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock));
 
 
             _startupWaitHandle.Set();

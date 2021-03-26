@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WeCollect
 {
@@ -9,9 +6,9 @@ namespace WeCollect
     {
         public Uri Web3Url { get; set; }
 
-        public string Web3ServerAddress { get; set; }
+        public string Web3HotAddress { get; set; }
 
-        public string Web3ServerPrivateKey { get; set; }
+        public string Web3HotPrivateKey { get; set; }
 
         public Uri DocumentDbEndpoint { get; set; }
 

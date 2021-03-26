@@ -4,18 +4,22 @@ using System.Diagnostics;
 
 namespace WeCollect.App
 {
-    public class Logger : ILogger
+    public class Log : ILogger
     {
+        public static ILoggerFactory loggerFactory = new LoggerFactory()
+            .AddConsole()
+            .AddDebug();
+        private static ILogger logger = loggerFactory.CreateLogger("default");
 
         private readonly ILogger _next;
 
 
-        private Logger(ILogger next)
+        private Log(ILogger next)
         {
             _next = next;
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (logLevel >= LogLevel.Warning)
             {
@@ -34,10 +38,6 @@ namespace WeCollect.App
             return _next.BeginScope(state);
         }        
 
-        public static ILoggerFactory loggerFactory = new LoggerFactory()
-            .AddConsole()
-            .AddDebug();
-
         public static ILogger<T> GetLogger<T>()
         {
             return loggerFactory.CreateLogger<T>();
@@ -48,6 +48,33 @@ namespace WeCollect.App
             return loggerFactory.CreateLogger(categoryName);
         }
 
+        public static void LogError(Exception ex)
+        {
+            logger.LogError(ex);
+            Debug.Fail(ex.ToString() + Environment.NewLine + ex.StackTrace);
+        }
+
+        public static void LogError(Exception ex, string message)
+        {
+            logger.LogError(ex, message);
+            Debug.Fail(ex.ToString() + Environment.NewLine + ex.StackTrace);
+        }
+
+        public static void LogError(string message)
+        {
+            logger.LogError(message);
+            Debug.Fail(message);
+        }
+
+        public static void LogWarn(string message)
+        {
+            logger.LogWarning(message);
+        }
+
+        public static void LogInfo(string message)
+        {
+            logger.LogInformation(message);
+        }
     }
 
     public static class ILoggerExtensions

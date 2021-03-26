@@ -10,6 +10,11 @@
     #9a9999 - sec
 */
 
+.card-img {
+    /* Set a standard height so it's not collapsed while it's loading */
+    min-height:250px;
+}
+
 html, body {
     font-family: 'Oswald', Helvetica, Arial, sans-serif;
     font-weight: 300;

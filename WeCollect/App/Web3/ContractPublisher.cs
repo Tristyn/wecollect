@@ -21,13 +21,13 @@ namespace WeCollect.App.Web3
         public async Task<(Contract, TransactionReceipt)> Deploy()
         {
             await _container.Web3.UnlockServerAccount(
-                _container.Config.Web3ServerAddress,
-                _container.Config.Web3ServerPrivateKey,
+                _container.Config.Web3HotAddress,
+                _container.Config.Web3HotPrivateKey,
                 120);
 
             string txnHash = await _container.Web3.Eth.DeployContract.SendRequestAsync(
                 _contractArtifact.Bin,
-                _container.Config.Web3ServerAddress,
+                _container.Config.Web3HotAddress,
                 new HexBigInteger(4712388));
 
             TransactionReceipt receipt;

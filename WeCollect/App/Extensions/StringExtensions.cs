@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace WeCollect.App.Extensions
+namespace System
 {
     public static class StringExtensions
     {

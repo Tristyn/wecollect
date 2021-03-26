@@ -1,8 +1,5 @@
 ﻿using Contracts.Contracts.Cards.ContractDefinition;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WeCollect.App.Web3
 {

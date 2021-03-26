@@ -1,7 +1,4 @@
-﻿using Nito.AsyncEx;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,26 +9,22 @@ namespace WeCollect.App.Web3
     {
         private readonly Nethereum.Web3.Web3 _web3;
         private readonly IBlockCheckpoint _blockCheckpoint;
-
-        private readonly AsyncAutoResetEvent _runEvent = new AsyncAutoResetEvent();
-
+        
         public NewBlockLoop(Nethereum.Web3.Web3 web3, IBlockCheckpoint blockCheckpoint)
         {
             _web3 = web3;
             _blockCheckpoint = blockCheckpoint;
         }
 
-        public async Task Loop(Func<BigInteger, Task> callback, Func<Exception, Task> error)
-        {
-            await _runEvent.WaitAsync();
-
+        public async Task Loop(Func<BigInteger, Task> callback)
+        {            
             while (true)
             {
                 try
                 {
                     while (!await _blockCheckpoint.BlockExistsOnChain())
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(5));
                     }
 
                     await callback(_blockCheckpoint.Checkpoint.BlockNumber.Value);
@@ -40,14 +33,9 @@ namespace WeCollect.App.Web3
                 }
                 catch (Exception ex)
                 {
-                    await error(ex);
+                    Log.LogError(ex);
                 }
             }
-        }
-
-        public void Start()
-        {
-            _runEvent.Set();
         }
 
         public CancellationToken BlockCreatedToken => _blockCreatedCts.Token;

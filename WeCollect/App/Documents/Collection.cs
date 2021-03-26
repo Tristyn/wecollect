@@ -1,6 +1,5 @@
 ﻿using Microsoft.Azure.Documents.Client;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -27,8 +26,7 @@ namespace WeCollect.App.Documents
         public async Task<T> Get(string id, bool ensureStatusCode = true)
         {
             await documentDb.EnsureDbExists();
-            DocumentResponse<T> resp = await _client.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
-            return resp.Document;
+            return await _client.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
         }
 
         /// <exception cref="DocumentClientException"/>
@@ -37,6 +35,15 @@ namespace WeCollect.App.Documents
             await documentDb.EnsureDbExists();
 
             var resp = await _client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, document.id), document);
+        }
+
+        /// <exception cref="DocumentClientException"/>
+        public async Task<T> ReplaceGet(T document, bool ensureStatusCode = true)
+        {
+            await documentDb.EnsureDbExists();
+            Uri uri;
+            var resp = await _client.ReplaceDocumentAsync(uri= UriFactory.CreateDocumentUri(DatabaseId, CollectionId, document.id), document);
+            return await _client.ReadDocumentAsync<T>(uri);
         }
 
         /// <exception cref="DocumentClientException"/>

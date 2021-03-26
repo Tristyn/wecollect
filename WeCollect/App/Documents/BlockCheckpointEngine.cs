@@ -1,8 +1,4 @@
 ﻿using Microsoft.Azure.Documents;
-using Nethereum.RPC.Eth.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WeCollect.App.Models;
 

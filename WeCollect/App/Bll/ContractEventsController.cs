@@ -1,6 +1,5 @@
 ﻿using Contracts.Contracts.Cards.ContractDefinition;
 using Nethereum.Contracts;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WeCollect.App.Documents;
 using WeCollect.Server.Hubs;
@@ -8,12 +7,12 @@ using WeCollect.Server.Models;
 
 namespace WeCollect.App.Bll
 {
-    public class ContractEventsController
+    public class ContractEventsHandler
     {
         private readonly Container _container;
         private readonly CardDb _documents;
 
-        public ContractEventsController(Container container)
+        public ContractEventsHandler(Container container)
         {
             _container = container;
             _documents = container.Documents;
