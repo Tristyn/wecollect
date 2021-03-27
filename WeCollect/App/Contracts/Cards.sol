@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.8.3;
 
 contract Cards {
     event OnCardCreated(
@@ -75,7 +75,7 @@ contract Cards {
         uint256 price,
         uint256 miningLastCollectedDate,
         int32 miningLevel,
-        int32[7] parentCards
+        int32[7] calldata parentCards 
     ) public {
         require(msg.sender == _owner, "E1: msg.sender!=owner");
 
@@ -206,7 +206,7 @@ contract Cards {
         return 0;
     }
 
-    function getCollectionAmount(Card card) private returns (uint256) {
+    function getCollectionAmount(Card calldata card) private returns (uint256) {
         return 0;
     }
 

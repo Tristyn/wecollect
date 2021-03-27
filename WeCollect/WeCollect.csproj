@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
     <UserSecretsId>6404a65e-0826-4ccd-950d-c86c81342522</UserSecretsId>
   </PropertyGroup>
@@ -28,12 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="App\Contracts\bin\Cards.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="App\Contracts\bin\Test.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Content Include="App\Contracts\Cards.sol">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -41,40 +35,25 @@
 
   <ItemGroup>
     <PackageReference Include="Common.Logging" Version="3.4.1" />
-    <PackageReference Include="Magick.NET-Q8-x64" Version="7.6.0.1" />
+    <PackageReference Include="Magick.NET-Q8-x64" Version="7.23.3" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.0.0-preview2" />
-    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.0.0-preview" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.13.1" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.13.1" />
     <PackageReference Include="Microsoft.Azure.Graphs" Version="0.3.1-preview" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
-    <PackageReference Include="Nethereum.Web3" Version="3.0.0-rc1" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Nito.AsyncEx.Context" Version="1.1.0" />
-    <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Nito.AsyncEx.Oop" Version="1.0.1" />
-    <PackageReference Include="Nito.AsyncEx.Tasks" Version="1.1.0" />
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Nethereum.Web3" Version="3.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Nito.AsyncEx.Context" Version="5.1.0" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.0" />
+    <PackageReference Include="Nito.AsyncEx.Oop" Version="5.1.0" />
+    <PackageReference Include="Nito.AsyncEx.Tasks" Version="5.1.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="App\Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="App\Contracts\bin\Cards.abi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="App\Contracts\bin\Cards.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="App\Contracts\bin\Test.abi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="App\Contracts\bin\Test.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -88,6 +67,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="App\Contracts\Cards_sol_Cards.abi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="App\Contracts\Cards_sol_Cards.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="App\Contracts\Test.sol">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

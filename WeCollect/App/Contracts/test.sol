@@ -1,4 +1,4 @@
-﻿pragma solidity ^0.4.24;
+﻿pragma solidity ^0.8.3;
 
 contract Test {
     int _multiplier;
@@ -9,8 +9,8 @@ contract Test {
         int result
     );
 
-    constructor(int multipier) public {
-        _multiplier = multipier;
+    constructor() public {
+        //_multiplier = multipier;
     }
 
     function mulitply(int val) public payable returns (int d){

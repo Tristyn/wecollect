@@ -21,7 +21,7 @@ namespace WeCollect
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _startupWaitHandle = new AsyncManualResetEvent();
             StartupComplete = new ValueTask(Task.Run(async () => { await _startupWaitHandle.WaitAsync(); }));
@@ -48,7 +48,7 @@ namespace WeCollect
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
             services.AddSignalR();
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -124,7 +124,7 @@ namespace WeCollect
             var cardContractCreatedBlock = Container.ContractArtifacts.DocumentsByName[Container.ContractArtifacts.Cards.Name].TransactionReceipt.BlockNumber.Value;
             var checkpoint = await checkpointFactory.GetOrCreateCheckpoint("blockManagerCheckpoint", cardContractCreatedBlock);
 
-            
+
             // Begin BlockLoop
             var blockLoop = new NewBlockLoop(web3, checkpoint);
             _ = Task.Run(() => blockLoop.Loop(newBlockManager.OnBlock));
@@ -150,16 +150,16 @@ namespace WeCollect
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseJsDataInjector();
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<Server.Hubs.CardHub>("/api/hubs");
+                endpoints.MapControllerRoute(
+                    name: "areaRoute",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    //defaults: new { controller = "Home", action = "Index" });
+
+                endpoints.MapHub<Server.Hubs.CardHub>("/api/hubs");
             });
         }
     }

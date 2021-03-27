@@ -8,6 +8,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Nethereum.Web3" Version="3.0.0-rc1" />
+    <PackageReference Include="Nethereum.Autogen.ContractApi" Version="3.6.2" />
+    <PackageReference Include="Nethereum.Web3" Version="3.8.0" />
   </ItemGroup>
 </Project>

@@ -1,14 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace WeCollect.App
 {
     public class Log : ILogger
     {
-        public static ILoggerFactory loggerFactory = new LoggerFactory()
+        public static ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            builder
             .AddConsole()
-            .AddDebug();
+            .AddDebug()
+            .AddEventLog(new Microsoft.Extensions.Logging.EventLog.EventLogSettings()));
         private static ILogger logger = loggerFactory.CreateLogger("default");
 
         private readonly ILogger _next;
@@ -36,7 +39,7 @@ namespace WeCollect.App
         public IDisposable BeginScope<TState>(TState state)
         {
             return _next.BeginScope(state);
-        }        
+        }
 
         public static ILogger<T> GetLogger<T>()
         {

@@ -36,10 +36,10 @@ namespace WeCollect.App.Web3
 
             var cards = web3.Eth.GetContract(contracts.Cards.Abi, cardsService.ContractHandler.ContractAddress);
             
-            CardCreatedEvent = cards.GetEvent<OnCardCreatedEventDTO>("OnCardCreated");
-            BoughtCardEvent = cards.GetEvent<OnBoughtCardEventDTO>("OnBoughtCard");
-            BoughtMiningLevelEvent = cards.GetEvent<OnBoughtMiningLevelEventDTO>("OnBoughtMiningLevel");
-            CardMiningCollectedEvent = cards.GetEvent<OnCardMiningCollectedEventDTO>("OnCardMiningCollected");
+            CardCreatedEvent = cards.GetEvent<OnCardCreatedEventDTO>();
+            BoughtCardEvent = cards.GetEvent<OnBoughtCardEventDTO>();
+            BoughtMiningLevelEvent = cards.GetEvent<OnBoughtMiningLevelEventDTO>();
+            CardMiningCollectedEvent = cards.GetEvent<OnCardMiningCollectedEventDTO>();
         }
 
     }

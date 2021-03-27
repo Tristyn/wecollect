@@ -29,19 +29,17 @@ namespace WeCollect.App.Web3
             ByName = contracts;
             All = contracts.Values.ToArray();
             
-            Test = contracts[nameof(Test)];
-            Cards = contracts[nameof(Cards)];
+            //Test = contracts[nameof(Test)];
+            Cards = contracts.Where(contract => contract.Key.EndsWith(nameof(Cards))).FirstOrDefault().Value;
         }
 
         public static async Task<ContractArtifacts> Initialize()
         {
             string dir = Path.Combine(
-                new Uri(Assembly.GetEntryAssembly().CodeBase).GetDirectory(),
-                "App", "Contracts", "bin");
+                new Uri(Assembly.GetEntryAssembly().Location).GetDirectory(),
+                "App", "Contracts");
 
-            var contractSourcePaths = Directory.GetFiles(dir, "*.bin", SearchOption.AllDirectories);
-
-            
+            var contractSourcePaths = Directory.GetFiles(dir, "*.bin", SearchOption.TopDirectoryOnly);
 
             var artifacts = await Task.WhenAll(contractSourcePaths.Select(contractSourcePath => Task.Run(() => new ContractArtifact(contractSourcePath))));
             var contracts = artifacts.ToDictionary(contract => contract.Name);
